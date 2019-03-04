@@ -14,6 +14,7 @@ Vagrant.configure("2") do |config|
   # boxes at https://vagrantcloud.com/search.
   config.vm.box = "debian/stretch64"
   config.vm.box_version = "9.7.0"
+  config.vm.hostname = "tccwasm"
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -24,12 +25,12 @@ Vagrant.configure("2") do |config|
   # within the machine from a port on the host machine. In the example below,
   # accessing "localhost:8080" will access port 80 on the guest machine.
   # NOTE: This will enable public access to the opened port
-  # config.vm.network "forwarded_port", guest: 80, host: 8080
+  config.vm.network "forwarded_port", guest: 8080, host: 8080, auto_correct:true
 
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine and only allow access
   # via 127.0.0.1 to disable public access
-  # config.vm.network "forwarded_port", guest: 80, host: 8080, host_ip: "127.0.0.1"
+  # config.vm.network "forwarded_port", guest: 8080, host: 8080, host_ip: "127.0.0.1", auto_correct:true
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
@@ -38,7 +39,7 @@ Vagrant.configure("2") do |config|
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on
   # your network.
-  # config.vm.network "public_network"
+  config.vm.network "public_network"
 
   # Share an additional folder to the guest VM. The first argument is
   # the path on the host to the actual folder. The second argument is
@@ -79,6 +80,8 @@ Vagrant.configure("2") do |config|
       apt-get install net-tools -y
       apt-get instlal openssh-server -y
       apt-get install apt-transport-https -y
+      apt-get install vim -y
+      apt-get install tmux -y
       apt-get install build-essential -y
       apt-get install linux-headers-$(uname -r) -y
       apt-get install cmake -y
