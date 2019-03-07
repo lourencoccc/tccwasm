@@ -1,105 +1,36 @@
 # tccwasm
-Desenvolvimento do Trabalho de Conclusão de Curso 2019.1 - Web Assembly
-
-
-Why WebAssembly is faster?
-
-
-* Introdution
-    * [A cartoon intro to WebAssembly](https://hacks.mozilla.org/2017/02/a-cartoon-intro-to-webassembly/)
-* Background:
-    * [A crash course in just-in-time (JIT) compilers](https://hacks.mozilla.org/2017/02/a-crash-course-in-just-in-time-jit-compilers/)
-    * [A crash course in assembly](https://hacks.mozilla.org/2017/02/a-crash-course-in-assembly/)
-* WebAssembly, the present:
-    * [Creating and working with WebAssembly modules](https://hacks.mozilla.org/2017/02/creating-and-working-with-webassembly-modules/)
-    * [What makes WebAssembly fast?](https://hacks.mozilla.org/2017/02/what-makes-webassembly-fast/)
-* WebAssembly, the future:
-    * [Where is WebAssembly now and what’s next?](https://hacks.mozilla.org/?p=30522)
-
-https://rsms.me/wasm-intro
-https://hacks.mozilla.org/2018/10/webassemblys-post-mvp-future/
-https://hacks.mozilla.org/2018/10/calls-between-javascript-and-webassembly-are-finally-fast-%f0%9f%8e%89/
-
-This is the 1st article in a 3-part series:
-
-* [Creating a WebAssembly module instance with JavaScript](https://hacks.mozilla.org/2017/07/creating-a-webassembly-module-instance-with-javascript/)
-* [Memory in WebAssembly (and why it’s safer than you think]()
-* [WebAssembly table imports… what are they?]()
-
-
-Development base enviroment
-
-This porject use the Debian 9.7.0 as base enviroment.
-
-Command to install basic tools for linux:
-
-```shell
-    apt-get update
-    apt-get install git -y
-    apt-get install util-linux -y
-    apt-get install htop -y
-    apt-get install zsh -y
-    apt-get install zip -y
-    apt-get install curl -y
-    apt-get install dkms -y
-    apt-get install sudo -y
-    apt-get install net-tools -y
-    apt-get instlal openssh-server -y
-    apt-get install apt-transport-https -y
-    # to c++
-    apt-get install build-essential -y
-    apt-get install linux-headers-$(uname -r) -y
-    apt-get install cmake -y
-    # to opencv
-    apt-get install libgtk2.0-dev -y 
-    apt-get install pkg-config -y
-    apt-get install ibavcodec-dev -y
-    apt-get install libavformat-dev -y
-    apt-get install libswscale-dev -y
-```
-
-On Windows 10, is necessary to install VirtualBox and Vagrant, then proceed the previus linux command.
-This project provide the Vagrantfile.
-
-
-Visusal Studio Code
-
-For build opencv
-
-libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev
+Web Assembly - Uma analise quantitativa e qualitativa
 
 
 
-cenario de teste 1
+Ambiente de desenvolvimento é o Linux que pode ser configurado automaticamente com Vagrante usando o Virtual Box
 
-2GB de arquivos de texto
+Pré-requsitos:
 
-1. arquivo de texto 
-2. 
+* [VirtualBox 6.0.4 Oracle VM VirtualBox Extension Pack](https://www.virtualbox.org/wiki/Downloads)
+* [Vagrant](https://github.com/hashicorp/vagrant)
 
-2GB de arquivos de imagem
+Iniciar maquina virutal:
 
+    Vagrant up
 
-2GB de arquivos de imaem e video.
+Após instalação:
 
-Dado est cenari será disparado processo e carregamento e compressão dos arquivos, calculando o tempo de processameno decorrido
-a partir 
+Por padrão o Vagrant cria um dsco virtual do tipo VMDK, que não pode ser redimendsionado como será preciso mais do que os 8 GB,
+sugeridos como padrão, devemos proceder com a substituição do disco VMDK por VDI, conforme proceimento a seguir:
 
+1. Acessar diretorio onde a maquina virtual está instalada e encontrar o arquivo com a extensão VMDK, exemplo;
 
-Other benchmarks
+        cd D:\VMBox
 
-https://attractivechaos.github.io/plb/
-https://salsa.debian.org/benchmarksgame-team/benchmarksgame
-https://salsa.debian.org/benchmarksgame-team/benchmarksgame/blob/master/public/download/benchmarksgame-sourcecode.zip
-https://benchmarksgame-team.pages.debian.net/benchmarksgame/dont-jump-to-conclusions.html
-http://www.cleveralgorithms.com/nature-inspired/advanced/racing_algorithms.html
-http://benchmark.r-forge.r-project.org/
-https://julialang.org/benchmarks/
-https://github.com/JuliaLang/Microbenchmarks
+2. Em seguida proceder com os cmandos abaixo:
+        VBoxManage clonemedium disk D:\VMBox\stretch\stretch_1.vmdk D:\VMBox\stretch\stretch_1.vdi --format VDI
+        VBoxManage modifymedium disk "D:\VMBox\stretch\stretch_1.vdi" --resize 51200
+        VBoxManage storageattach tccwasmvm --storagectl "SATA Controller" --port 0 --device 0 --type hdd --medium D:\VMBox\stretch\stretch_1.vdi
 
-
-https://hacks.mozilla.org/2017/09/bootcamps-webassembly-and-computer-vision/
-https://codepen.io/huningxin/pen/NvjdeN
-https://github.com/shamadee/web-dsp
+3.  Caso o disco VDK já tenha sido criado é possivel substituir:
 
 
+        cd D:\VMBox\tccwasm_default_1551897915300_49204
+        VBoxManage createmedium disk --filename .\tccwasm.vdi --format VDI --size 51200
+        VBoxManage storageattach tccwasm_default_1551897915300_49204 --storagectl "SATA Controller" --port 0 --device 0 --type hdd --medium .\tccwasm.vdi
