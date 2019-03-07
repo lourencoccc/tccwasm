@@ -12,9 +12,9 @@ Vagrant.configure("2") do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://vagrantcloud.com/search.
-  config.vm.box = "debian/stretch64"
-  config.vm.box_version = "9.7.0"
-  config.vm.hostname = "tccwasm"
+  config.vm.box = "lourencoccc/debian_stretch64_lvm"
+  config.vm.box_version = "9.8"
+  config.vm.hostname = "tccwasmvm"
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -55,10 +55,11 @@ Vagrant.configure("2") do |config|
   config.vm.provider "virtualbox" do |vb|
   #   # Display the VirtualBox GUI when booting the machine
       vb.gui = false
-
+      vb.name = "tccwasmvm"
   #   # Customize the amount of memory on the VM:
-      vb.memory = "1024"
-      vb.cpus = 1
+      vb.memory = "1536"
+      vb.cpus = 2
+      vb.customize ["modifyvm", :id, "--vram", "64"]
   end
   #
   # View the documentation for the provider you are using for more
@@ -85,5 +86,10 @@ Vagrant.configure("2") do |config|
       apt-get install build-essential -y
       apt-get install linux-headers-$(uname -r) -y
       apt-get install cmake -y
+      apt-get install libgtk2.0-dev -y
+      apt-get install pkg-config -y
+      apt-get install ibavcodec-dev -y
+      apt-get install libavformat-dev -y
+      apt-get install libswscale-dev -y
   SHELL
 end
