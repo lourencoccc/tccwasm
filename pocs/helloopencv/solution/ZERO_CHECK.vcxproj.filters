@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="D:\Users\joao_lourenco\labs\tccwasm\pocs\helloopencv\solution\CMakeFiles\a259ee6b92e4cde29960fe9844648da9\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{B389711F-E75F-316B-B96C-8BB9AA3FB5AF}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

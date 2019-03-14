@@ -70,6 +70,8 @@ Vagrant.configure("2") do |config|
   # documentation for more information about their specific syntax and use.
   config.vm.provision "shell", inline: <<-SHELL
       apt-get update
+      sudo dpkg --add-architecture i386
+      apt-get update
       apt-get install git -y
       apt-get install util-linux -y
       apt-get install htop -y
@@ -84,12 +86,18 @@ Vagrant.configure("2") do |config|
       apt-get install vim -y
       apt-get install tmux -y
       apt-get install build-essential -y
+      apt-get install libc6-dev-i386 -y
+      apt-get install g++-multilib -y
       apt-get install linux-headers-$(uname -r) -y
       apt-get install cmake -y
       apt-get install libgtk2.0-dev -y
+      apt-get install libgtk2.0-dev:i386 -y
       apt-get install pkg-config -y
-      apt-get install ibavcodec-dev -y
+      apt-get install libavcodec-dev -y
+      apt-get install libavcodec-dev:i386 -y
       apt-get install libavformat-dev -y
+      apt-get install libavformat-dev:i386 -y
       apt-get install libswscale-dev -y
+      apt-get install libswscale-dev:i386 -y
   SHELL
 end

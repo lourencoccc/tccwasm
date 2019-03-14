@@ -13,18 +13,44 @@ Necessario configurar os repositorios para versão 4.0.1
     cd opencv
     git checkout tags/4.0.1
 
+Para o projeto TCCWASM as bibliotecs do opencv devem seer compiladas para Linker estatico.
+Por isso a compilação p/ Linux e WIndows deve ser feita de maneira estatica.
+
 ## Linux
 
     cd opencv
     mkdir build
     cd build
-    cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DBUILD_SHARED_LIBS=OFF ..
+    cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS=-m32 -DCMAKE_INSTALL_PREFIX=/usr/local -DBUILD_SHARED_LIBS=OFF ..
+    make -j7
+    sudo make install
 
 ## Windows
 
+Pré requisitos
+
+* Visual Studdio Community 15 2017 versão 32 bits.
+* Python 3.7 32 bits
+* Python 3.7 64 bits
+* Python 2.7 32 bits
+
+
     Configurar cmake e fazer build com Visual Studio Community, versão 15 ou superior.
+    cd opencv
+    mkdir build
+    cd build
+    cmake -G "Visual Studio 15 2017" -A Win32 -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF ..
+    cmake.exe --build . --config Release --target INSTALL
+
+Após execução dos comando logo acima uma pasta 
+
+## WASM
+
+    cd opencv
+    python ./platforms/js/build_js.py build_wasm --build_wasm
 
 ## Referências
 
-* [OpenCV no Linus](https://docs.opencv.org/3.4/d7/d9f/tutorial_linux_install.html)
+* [OpenCV no Linux](https://docs.opencv.org/4.0.1/d7/d9f/tutorial_linux_install.html)
 * [OpenCV no Windows](https://perso.uclouvain.be/allan.barrea/opencv/cmake_config.html)
+* [OpenCV JS](https://docs.opencv.org/4.0.1/d4/da1/tutorial_js_setup.html)

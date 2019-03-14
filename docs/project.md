@@ -1,40 +1,54 @@
+# TCC WebAsembly - Provas de Conceito
 
-Opção 1
+## Opção 1 - Aplicação otimizada de gerenciamento de dados na nuvem
 
-Aplicade arquivos para sincronizar com provedores de web 
+***Descrição:** Aplicação otimizada de gerenciamento de dados na nuvem, reduzindo o trafego de dados 
+aplicando algoritimo compressão em arquivos para upload e descompressão quanado for solicitado
+download destes arquivos.
 
-Cenarios
+**Vialbilidade:** A prova de conceito pode ser feita implementando um simples gerecenciador de pasta do Dropbox.
+Onde é esperado uma economia  no fluxo de tranferência de dados de aproximadamente 25% 
+a depender das carateristicas dos arquivos armazenados.
 
-C1 - Comprimir e descomprimir 100 MB de imagens
+**Justificativa:** O volume de dados produzidos e armazenados por pessoa tem crescido constantemente
+bem como uso de provedores de amarzen de dados como Dropbox, Google Drive, OneDrive, entre outros.
+A manuteção e trafego destes dados acarreta em custos de varias naturezas para todos
+os envolvidos, provedores de internet, provedores de amarzen de dados e consumidores finais.
+Com a redução dos dados trafegados esperasse uma redução destes custos.
 
-C2 - Comprimir e descomprimir 200 MB de imagens
+**Cenarios de teste:**
 
-C3 - Comprimir e descomprimir 300 MB de imagens
+* C1 - Comprimir e descomprimir 100 MB de imagens TIFF
+* C2 - Comprimir e descomprimir 200 MB de imagens TIFF
+* C3 - Comprimir e descomprimir 300 MB de imagens TIFF
+* C4 - Comprimir e descomprimir 500 MB de imagens TIFF
+* C5 - Comprimir e descomprimir 800 MB de imagens TIFF
 
-C4 - Comprimir e descomprimir 500 MB de imagens
+**Analise:**Contabilizar os tempos e para compresão e decompressão e taxas de compressão.
+Comparar resultados entre browsers com WebAssembly e aplicação nativa.
 
-C5 - Comprimir e descomprimir 800 MB de imagens
+**Dataset**:
 
+## Opção 2 - Sistema de Extração de Faces com Opencv 
 
-Opção 2
+**Descrição:** A partir do metodo [Haar Cascades]
+implmentado na versão 4.0.1 do opencv será feito a extração de faces de um video ou conjunto de imagens.
 
-Aplicação de extração de faces for dataset.
+**Vialbilidade:** O openCV é um concjunto de biblioteca de processmantos de imagens e visão computacional,
+o qual fornece uma implmentação padrão do [Haar Cascades](https://docs.opencv.org/4.0.1/d7/d8b/tutorial_py_face_detection.html).
 
-A partir de um modelo de treinado padraõ fornecedo na versão 4.0 do opencv
-será feito a extração de faces para um ou mais imagens.
+**Justificativa:** Atualmente promover uma melhor experiência dos ususarios de aplicações é um fator crucial para o sucesso ou não. 
+Com isso as aplicações web estão ficando cada vez mais sofisticadas e exigentes de recursos computacionais, ser capaz de executar 
+processas de reconhecimento de imagem com eficiência no browser comprava que o WebAssembly de fato é capaz de promover maior 
+poder computacional as aplicações web.
 
-Sistema deve receber com input um conjunto de imagens connectadas ao opencv.
+**Cenarios de teste**
 
-Cenarios de teste
+* C1 - Extrair faces de conjunto de 100 MB de imagens
+* C2 - Extrair faces de conjunto de 200 MB de imagens
+* C3 - Extrair faces de conjunto de 300 MB de imagens
+* C4 - Extrair faces de conjunto de 500 MB de imagens
+* C5 - Extrair faces de conjunto de 800 MB de imagens
 
-C1 - Extrair faces de conjunto de 100 MB de imagens
-
-C2 - Extrair faces de conjunto de 200 MB de imagens
-
-C3 - Extrair faces de conjunto de 300 MB de imagens
-
-C4 - Extrair faces de conjunto de 500 MB de imagens
-
-C5 - Extrair faces de conjunto de 800 MB de imagens
-
-https://www.arunponnusamy.com/yolo-object-detection-opencv-python.html
+**Analise:** Contabilizar o tempo de execução para extração das faces.
+Comparar resultados entre browsers com WebAssembly e aplicação nativa.
