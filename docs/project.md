@@ -2,21 +2,26 @@
 
 ## Opção 1 - Aplicação otimizada de gerenciamento de dados na nuvem
 
-***Descrição:** Aplicação otimizada de gerenciamento de dados na nuvem, reduzindo o trafego de dados 
+### Descrição: 
+Aplicação otimizada de gerenciamento de dados na nuvem, reduzindo o trafego de dados 
 aplicando algoritimo compressão em arquivos para upload e descompressão quanado for solicitado
 download destes arquivos.
 
-**Vialbilidade:** A prova de conceito pode ser feita implementando um simples gerecenciador de pasta do Dropbox.
+### Vialbilidade 
+A prova de conceito pode ser feita implementando um simples gerecenciador de pasta do Dropbox.
 Onde é esperado uma economia  no fluxo de tranferência de dados de aproximadamente 25% 
 a depender das carateristicas dos arquivos armazenados.
 
-**Justificativa:** O volume de dados produzidos e armazenados por pessoa tem crescido constantemente
-bem como uso de provedores de amarzen de dados como Dropbox, Google Drive, OneDrive, entre outros.
+### Justificativa
+O volume de dados produzidos e armazenados por pessoa tem crescido constantemente
+bem como uso de provedores de armazen de dados como Dropbox, Google Drive, OneDrive, entre outros.
 A manuteção e trafego destes dados acarreta em custos de varias naturezas para todos
 os envolvidos, provedores de internet, provedores de amarzen de dados e consumidores finais.
-Com a redução dos dados trafegados esperasse uma redução destes custos.
+Ser capaz de executar algoritimos de compressão de dados com eficiência, sem perdas significates de
+performance comprova a capacidade do WebAssembly. Alem disso com a redução dos dados trafegados 
+esperasse uma redução destes custos.
 
-**Cenarios de teste:**
+### Cenarios de teste
 
 * C1 - Comprimir e descomprimir 100 MB de imagens TIFF
 * C2 - Comprimir e descomprimir 200 MB de imagens TIFF
@@ -24,25 +29,27 @@ Com a redução dos dados trafegados esperasse uma redução destes custos.
 * C4 - Comprimir e descomprimir 500 MB de imagens TIFF
 * C5 - Comprimir e descomprimir 800 MB de imagens TIFF
 
-**Analise:**Contabilizar os tempos e para compresão e decompressão e taxas de compressão.
+### Analise: 
+Contabilizar os tempos e para compresão e decompressão e taxas de compressão.
 Comparar resultados entre browsers com WebAssembly e aplicação nativa.
-
-**Dataset**:
 
 ## Opção 2 - Sistema de Extração de Faces com Opencv 
 
-**Descrição:** A partir do metodo [Haar Cascades]
-implmentado na versão 4.0.1 do opencv será feito a extração de faces de um video ou conjunto de imagens.
+### Descrição
+A partir do metodo Haar Cascades implmentado na versão 4.0.1 do 
+opencv será feito a extração de faces de um video ou conjunto de imagens.
 
-**Vialbilidade:** O openCV é um concjunto de biblioteca de processmantos de imagens e visão computacional,
+### Vialbilidade
+O openCV é um concjunto de biblioteca de processmantos de imagens e visão computacional,
 o qual fornece uma implmentação padrão do [Haar Cascades](https://docs.opencv.org/4.0.1/d7/d8b/tutorial_py_face_detection.html).
 
-**Justificativa:** Atualmente promover uma melhor experiência dos ususarios de aplicações é um fator crucial para o sucesso ou não. 
+### Justificativa
+Atualmente promover uma melhor experiência dos ususarios de aplicações é um fator crucial para o sucesso ou não. 
 Com isso as aplicações web estão ficando cada vez mais sofisticadas e exigentes de recursos computacionais, ser capaz de executar 
 processas de reconhecimento de imagem com eficiência no browser comprava que o WebAssembly de fato é capaz de promover maior 
 poder computacional as aplicações web.
 
-**Cenarios de teste**
+### Cenarios de teste
 
 * C1 - Extrair faces de conjunto de 100 MB de imagens
 * C2 - Extrair faces de conjunto de 200 MB de imagens
@@ -50,5 +57,7 @@ poder computacional as aplicações web.
 * C4 - Extrair faces de conjunto de 500 MB de imagens
 * C5 - Extrair faces de conjunto de 800 MB de imagens
 
-**Analise:** Contabilizar o tempo de execução para extração das faces.
+### Analise
+
+Contabilizar o tempo de execução para extração das faces.
 Comparar resultados entre browsers com WebAssembly e aplicação nativa.
