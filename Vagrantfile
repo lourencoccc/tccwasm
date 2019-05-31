@@ -85,16 +85,18 @@ Vagrant.configure("2") do |config|
       apt-get install apt-transport-https -y
       apt-get install vim -y
       apt-get install tmux -y
+      sudo apt install ntp -y
       apt-get install build-essential -y
       apt-get install libc6-dev-i386 -y
       apt-get install g++-multilib -y
       apt-get install linux-headers-$(uname -r) -y
       apt-get install cmake -y
+      apt-get install libgtk2.0-0:i386 -y
       apt-get install libgtk2.0-dev -y
       apt-get install libgtk2.0-dev:i386 -y
       apt-get install pkg-config -y
-      apt-get install libavcodec-dev -y
       apt-get install libavcodec-dev:i386 -y
+      apt-get install libavcodec-dev -y
       apt-get install libavformat-dev -y
       apt-get install libavformat-dev:i386 -y
       apt-get install libswscale-dev -y
