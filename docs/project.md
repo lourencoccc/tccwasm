@@ -61,3 +61,10 @@ poder computacional as aplicações web.
 
 Contabilizar o tempo de execução para extração das faces.
 Comparar resultados entre browsers com WebAssembly e aplicação nativa.
+
+
+https://www.analyticsvidhya.com/blog/2018/07/top-10-pretrained-models-get-started-deep-learning-part-1-computer-vision/
+
+https://medium.com/@jonathan_hui/real-time-object-detection-with-yolo-yolov2-28b1b93e2088
+
+https://pjreddie.com/darknet/yolo/

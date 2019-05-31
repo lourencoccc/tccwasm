@@ -22,14 +22,22 @@ This is the 1st article in a 3-part series:
 ## Articles
 
 * https://rsms.me/wasm-intro
-* https://hacks.mozilla.org/2018/10/webassemblys-post-mvp-future/
+* https://hacks.mozilla.org/2018/10/webassemblys-pos    t-mvp-future/
 * https://hacks.mozilla.org/2018/10/calls-between-javascript-and-webassembly-are-finally-fast-%f0%9f%8e%89/
 
+https://rsms.me/wasm-intro
+https://medium.com/leaningtech/even-better-source-maps-with-c-webassembly-and-cheerp-d872276b7d3c
+https://hacks.mozilla.org/2018/01/oxidizing-source-maps-with-rust-and-webassembly/
 
 ## Tutorials
 
 * [An Introduction to Web Assembly](https://codelabs.developers.google.com/codelabs/web-assembly-intro/#0)
 * [WebAssembly Physics and DOM objects](https://codelabs.developers.google.com/codelabs/hour-chipmunk/index.html?index=..%2F..io2018#0) 
+https://developers.google.com/web/updates/2019/02/hotpath-with-wasm
+https://developers.google.com/web/updates/2018/10/wasm-threads
+https://developers.google.com/web/updates/2018/08/wasm-av1
+https://developers.google.com/web/updates/2018/04/loading-wasm
+https://developers.google.com/web/updates/tags/webassembly
 
 ## Videos
 
@@ -38,4 +46,12 @@ This is the 1st article in a 3-part series:
 * [Lin Clark: A Cartoon Intro to WebAssembly | JSConf EU 2017](https://www.youtube.com/watch?v=HktWin_LPf4)
 * [WebAssembly In Action - 2017](https://www.youtube.com/watch?v=DKHuEkmsx3M)
 * [Compiling for the Web with WebAssembly (Google I/O '17)](https://www.youtube.com/watch?v=6v4E6oksar0&t=2s)
+
+
+https://www.techrepublic.com/article/web-programming-languages-how-webassembly-will-change-the-way-you-build-web-apps/
+
+## Applications
+
+https://hacks.mozilla.org/2019/04/pyodide-bringing-the-scientific-python-stack-to-the-browser/?utm_source=dev-newsletter&utm_medium=email&utm_campaign=apr18-2019&utm_content=python
+
 
