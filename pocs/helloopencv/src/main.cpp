@@ -15,10 +15,10 @@ int main( int argc, char** argv )
   Mat gray_image;
   cvtColor( image, gray_image, COLOR_BGR2GRAY );
   imwrite( "Gray_Image.jpg", gray_image );
-  //namedWindow( imageName, WINDOW_AUTOSIZE );
-  //namedWindow( "Gray image", WINDOW_AUTOSIZE );
-  //imshow( imageName, image );
-  //imshow( "Gray image", gray_image );
+  namedWindow( imageName, WINDOW_AUTOSIZE );
+  namedWindow( "Gray image", WINDOW_AUTOSIZE );
+  imshow( imageName, image );
+  imshow( "Gray image", gray_image );
   waitKey(0);
   return 0;
 }

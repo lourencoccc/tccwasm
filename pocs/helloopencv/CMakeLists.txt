@@ -9,30 +9,29 @@ if(UNIX AND NOT APPLE)
     set(LINUX TRUE)
 endif()
 
-
 if(UNIX)
     message(STATUS ">>> Linux/OSx")
-    # cmake -G "Unix Makefiles" ..
-    # make
-    # linux/osx stuff here
-    #target_link_libraries(main /home/vagrant/opencv/build/opencv_core401d.lib)
-    #set(CMAKE_CXX_FLAGS "-m32")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
     #set(CMAKE_C_FLAGS "-m32")
-    #set(CMAKE_LD_FLAGS "-m32")
+    #set(CMAKE_EXE_LINKER_FLAGS "-m32")
     #set(LDFLAGS "-m32")
 elseif(WIN32)
     message(STATUS ">>> Windows")
-    # cmake -G "Visual Studio 15 2017" -A Win32 ..
-    # cmake --build . --config Release
-    # windows stuff here
-    #target_link_libraries(helloopencv D:/Libs/opencv/build/lib/Debug/opencv_core401d.lib)
+    #set(CMAKE_C_COMPILER "C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Tools/MSVC/14.16.27023/bin/Hostx64/x86/cl.exe")
+    #set(CMAKE_CXX_COMPILER "C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Tools/MSVC/14.16.27023/bin/Hostx64/x86/cl.exe")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
 endif()
-
 
 set(BUILD_SHARED_LIBS OFF)
 
 find_package( OpenCV REQUIRED )
+include_directories(${OpenCV_INCLUDE_DIRS})
+link_directories(${OpenCV_LIB_DIR})
+include_directories("include/")
+
 add_executable(helloopencv src/main.cpp)
-target_link_libraries( helloopencv ${OpenCV_LIBS})
+target_link_libraries( helloopencv ${OpenCV_LIBS} )
 
-
+add_executable(readwriteimg src/rwimg.cpp)
+target_link_libraries( readwriteimg ${OpenCV_LIBS} )
