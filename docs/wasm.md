@@ -55,3 +55,21 @@ https://www.techrepublic.com/article/web-programming-languages-how-webassembly-w
 https://hacks.mozilla.org/2019/04/pyodide-bringing-the-scientific-python-stack-to-the-browser/?utm_source=dev-newsletter&utm_medium=email&utm_campaign=apr18-2019&utm_content=python
 
 
+http://www.cs.colby.edu/maxwell/courses/tutorials/maketutor/
+
+https://github.com/emscripten-core/emscripten/issues/6312
+https://github.com/Planeshifter/emscripten-examples/tree/master/01_PassingArrays
+
+
+https://emscripten.org/docs/porting/connecting_cpp_and_javascript/embind.html
+
+https://emscripten.org/docs/porting/guidelines/function_pointer_issues.html
+
+
+https://github.com/opencv/opencv/blob/43467a2ac77207afd7bbc348e63d89692f838ad6/modules/js/src/core_bindings.cpp
+
+
+https://github.com/emscripten-core/emscripten/issues/2074
+
+
+https://docs.opencv.org/4.1.0/d3/d63/classcv_1_1Mat.html
