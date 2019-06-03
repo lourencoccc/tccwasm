@@ -1,3 +1,22 @@
 {
-    "C_Cpp.default.configurationProvider": "vector-of-bool.cmake-tools"
+    "files.associations": {
+        "array": "cpp",
+        "chrono": "cpp",
+        "complex": "cpp",
+        "functional": "cpp",
+        "memory": "cpp",
+        "ratio": "cpp",
+        "tuple": "cpp",
+        "type_traits": "cpp",
+        "utility": "cpp",
+        "xmemory0": "cpp",
+        "xtr1common": "cpp",
+        "xutility": "cpp",
+        "ostream": "cpp",
+        "xiosbase": "cpp",
+        "mutex": "cpp",
+        "iomanip": "cpp",
+        "string": "cpp",
+        "xstring": "cpp"
+    }
 }
