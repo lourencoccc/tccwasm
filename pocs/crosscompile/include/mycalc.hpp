@@ -37,6 +37,11 @@ namespace myapp
        */
       int mult(int a, int b);
 
+      void range(unsigned char* mat, int size=255);
+
+      // void apply(uint8_t* values, uint8_t factor);
+
+      // void copyByRef(uint8_t& matrixA, uint8_t& matrixB, int size);
   };
 
 }

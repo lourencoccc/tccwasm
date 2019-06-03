@@ -2,8 +2,7 @@
 
 namespace myapp
 {
-  MyCalc::MyCalc(){
-  }
+  MyCalc::MyCalc(){}
 
   int MyCalc::plus(int a, int b)
   {
@@ -24,4 +23,18 @@ namespace myapp
   {
     return a * b;
   }
+
+  void MyCalc::range(unsigned char* p, int size)
+  {
+    if(size > 255){
+      size = 255;
+    }
+    int i;
+    p[0] = 0;
+    for(i = 1; i < size; i++)
+    {
+      p[i] = p[i-1] + 1;
+    }
+  }
+
 }
