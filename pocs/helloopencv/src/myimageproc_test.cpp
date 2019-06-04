@@ -20,7 +20,7 @@ int main(int argc, const char** argv)
     return -1;
   }
 
-  helloopencv::MyImageProc myproc{color.cols, color.rows};
+  helloopencv::MyImageProc myproc{color.rows, color.cols};
   int type = color.type();
   string sst =typeToString(color.type());
   unsigned char* bufferImage = new unsigned char[color.total()];
@@ -28,10 +28,11 @@ int main(int argc, const char** argv)
   Mat gray{ color.rows, color.cols, CV_8UC1, bufferImage};
   imwrite("lenaGray.jpg", gray);
 
-  helloopencv::MyImageProc myproc2{color.cols, color.rows};
-  myproc2.setDataSrc(color.data, (color.total()*color.elemSize())/sizeof(unsigned char));
+  helloopencv::MyImageProc myproc2{color.rows, color.cols};
+  //myproc2.setDataSrc(color.data, (color.total()*color.elemSize())/sizeof(unsigned char));
+  myproc2.dataSrc = color.data;
   myproc2.gray();
-  Mat gray2{color.rows, color.cols, CV_8UC1, myproc2.dataResult};
+  Mat gray2{color.rows, color.cols, CV_8UC4, myproc2.dataResult};
   imwrite("lenaGray2.jpg", gray2);
 
   myproc2.hsv();

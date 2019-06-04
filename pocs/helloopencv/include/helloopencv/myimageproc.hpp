@@ -17,12 +17,15 @@ namespace  helloopencv
       long sizeResult;
 
       void setDataResult(cv::Mat& mat);
+      void allocDataSrc();
 
     public:
       unsigned char* dataSrc;
       unsigned char* dataResult;
 
-      MyImageProc(int cols, int rows);
+      MyImageProc();
+
+      MyImageProc(int rows, int cols);
 
       ~MyImageProc();
 
@@ -32,11 +35,13 @@ namespace  helloopencv
 
       void hsv();
 
+      int getCols();
+
+      int getRows();
+
       long getSizeSrc();
 
       long getSizeResult();
-
-      unsigned char* getDataSrc();
 
       void setDataSrc(unsigned char* dataSrc, long size);
   };

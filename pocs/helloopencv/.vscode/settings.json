@@ -17,6 +17,7 @@
         "mutex": "cpp",
         "iomanip": "cpp",
         "string": "cpp",
-        "xstring": "cpp"
+        "xstring": "cpp",
+        "vector": "cpp"
     }
 }
