@@ -73,3 +73,53 @@ https://github.com/emscripten-core/emscripten/issues/2074
 
 
 https://docs.opencv.org/4.1.0/d3/d63/classcv_1_1Mat.html
+
+
+TODO
+ 
+How to build C with VS in Windows/Linux
+How to build C++ with VS in Windows/Linux
+How to build C in WebAssembly
+How to build C++ in WebAssembly
+
+Introduction to WebAssembly 
+    What is?
+    Run simple app
+    Run WebAssembly from C++
+    
+
+Compiling
+
+
+
+
+
+
+# nb. this differs from the codelab, as we compile code from the parent folder
+emcc \
+  -o output.js ../*.c \
+  -s WASM=1 -s ONLY_MY_CODE=1 -s EXPORTED_FUNCTIONS="['_board_step','_board_init','_board_ref']"
+  
+em++ --bind --std=c++11 mandelbrot.cpp -s WASM=1 -s ALLOW_MEMORY_GROWTH=1 -o mandelbrot.js
+
+
+--memory-init-file 0 -s TOTAL_MEMORY=134217728 -s ALLOW_MEMORY_GROWTH=1
+
+-s MODULARIZE=1 -s SINGLE_FILE=1
+
+-s EXPORT_NAME=\"'cv'\" -s DEMANGLE_SUPPORT=1
+
+-s FORCE_FILESYSTEM=1 --use-preload-plugins --bind --post-js ${JS_HELPER} 
+
+
+Fatal: error in validating output
+shared:ERROR:  --mvp-features' failed (1)
+
+Fatal: error in validating output
+shared:ERROR: '/home/vagrant/emsdk/clang/e1.38.31_64bit/
+
+7367770
+933130
+64000
+
+8364900

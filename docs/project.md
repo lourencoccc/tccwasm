@@ -68,3 +68,23 @@ https://www.analyticsvidhya.com/blog/2018/07/top-10-pretrained-models-get-starte
 https://medium.com/@jonathan_hui/real-time-object-detection-with-yolo-yolov2-28b1b93e2088
 
 https://pjreddie.com/darknet/yolo/
+
+
+http://www.viratdata.org/
+
+http://www.lvc.ele.puc-rio.br/projects/video_surveillance/databases.html
+https://sites.google.com/site/meltemdemirkus/mcgill-unconstrained-face-video-database
+
+
+http://www.cvpapers.com/datasets.html
+
+
+http://www.cs.tau.ac.il/~wolf/ytfaces/
+
+Login: wolftau
+Password: wtal997
+
+
+https://www.gti.ssr.upm.es/data/vicocos3d.html
+
+https://www.gti.ssr.upm.es/research/gti-data/databases
