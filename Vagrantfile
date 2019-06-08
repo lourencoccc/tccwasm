@@ -88,6 +88,9 @@ Vagrant.configure("2") do |config|
       sudo apt install ntp -y
       apt-get install build-essential -y
       apt-get install libc6-dev-i386 -y
+      apt-get install libstdc++6:i386 -y
+      apt-get install libgcc1:i386 -y
+      apt-get install libncurses5:i386 -y
       apt-get install g++-multilib -y
       apt-get install linux-headers-$(uname -r) -y
       apt-get install cmake -y
