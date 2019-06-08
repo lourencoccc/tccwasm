@@ -1,12 +1,16 @@
 #include "helloopencv/myimage.hpp"
 
-#include <opencv2/opencv.hpp>
+#include <opencv2/objdetect.hpp>
+#include <opencv2/imgproc.hpp>
+// #include <opencv2/highgui.hpp>
+
 
 #ifndef MYIMAGEPROC_HPP
 #define MYIMAGEPROC_HPP
 
 namespace  helloopencv
 {
+
 
   class MyImageProc
   {
@@ -15,13 +19,16 @@ namespace  helloopencv
       int cols;
       long sizeSrc;
       long sizeResult;
-
+      cv::CascadeClassifier face_cascade;
+      cv::CascadeClassifier eyes_cascade;
       void setDataResult(cv::Mat& mat);
       void allocDataSrc();
+
 
     public:
       unsigned char* dataSrc;
       unsigned char* dataResult;
+
 
       MyImageProc();
 
@@ -34,6 +41,8 @@ namespace  helloopencv
       void gray();
 
       void hsv();
+
+      void faceDetect();
 
       int getCols();
 
@@ -48,6 +57,7 @@ namespace  helloopencv
 
   long dataSizeFrom(cv::Mat& mat);
 
+  void fitImageToWeb(cv::Mat& src, cv::Mat& img);
 }
 
 #endif

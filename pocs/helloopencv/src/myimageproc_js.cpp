@@ -56,6 +56,16 @@ namespace myimageprocjs
     return emscripten::val(emscripten::memory_view<unsigned char>(proc.getSizeResult(), proc.dataResult));
   }
 
+  emscripten::val faceDetect(MyImageProc& proc)
+  {
+    if(proc.dataSrc == nullptr)
+    {
+      return emscripten::val::undefined();
+    }
+    proc.faceDetect();
+    return emscripten::val(emscripten::memory_view<unsigned char>(proc.getSizeResult(), proc.dataResult));
+  }
+
 } // namespace myimageprocjs
 
 
@@ -65,6 +75,7 @@ EMSCRIPTEN_BINDINGS(myimageprocjs) {
     .constructor<int, int>()
     .function("gray", &myimageprocjs::gray)
     .function("hsv", &myimageprocjs::hsv)
+    .function("faceDetect", &myimageprocjs::faceDetect)
     .function("getCols", &myimageprocjs::getCols)
     .function("getRows", &myimageprocjs::getRows)
     .function("getDataResult", &myimageprocjs::getDataResult)
