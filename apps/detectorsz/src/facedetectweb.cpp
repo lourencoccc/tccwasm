@@ -1,6 +1,0 @@
-
-
-namespace dzweb
-{
-
-} // namespace detectorsz

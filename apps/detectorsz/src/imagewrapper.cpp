@@ -6,7 +6,7 @@ ImageWrapper::ImageWrapper() {
   this->cols = 0;
   this->cvType = CV_TYPE_DEFAULT;
   this->size = 0;
-  data = nullptr;
+  this->data = nullptr;
 }
 
 ImageWrapper::ImageWrapper(int rows, int cols, size_t size) {
@@ -15,7 +15,7 @@ ImageWrapper::ImageWrapper(int rows, int cols, size_t size) {
   this->cols = cols;
   this->cvType = CV_TYPE_DEFAULT;
   this->size = size;
-  data = nullptr;
+  this->data = nullptr;
 }
 
 ImageWrapper::ImageWrapper(int rows, int cols, int cvType, size_t size) {
@@ -24,7 +24,7 @@ ImageWrapper::ImageWrapper(int rows, int cols, int cvType, size_t size) {
   this->cols = cols;
   this->cvType = cvType;
   this->size = size;
-  data = nullptr;
+  this->data = nullptr;
 }
 
 ImageWrapper::~ImageWrapper() {
@@ -35,7 +35,8 @@ ImageWrapper::~ImageWrapper() {
 unsigned char *ImageWrapper::getData() { return data; }
 
 void ImageWrapper::copyData(unsigned char *_data) {
-  data = new unsigned char[size];
-  memcpy(data, _data, size);
+  //data = new unsigned char[size];
+  data = _data;
+  //memcpy(data, _data, size);
 }
 } // namespace detectorsz

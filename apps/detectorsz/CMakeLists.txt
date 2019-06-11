@@ -7,15 +7,15 @@ set (crosscompile_VERSION_MINOR 0)
 if(UNIX AND NOT APPLE)
     set(LINUX TRUE)
 endif()
-
+#-s ALLOW_MEMORY_GROWTH=1
 if(WASM)
     message(">>> WebAssembly - WASM=${WASM}")
     set(CMAKE_C_COMPILER "emcc")
     set(CMAKE_CXX_COMPILER "em++")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -m32 --std=c++17 -s WASM=1 -s DEMANGLE_SUPPORT=1")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m32 --std=c++17 -s WASM=1 -s DEMANGLE_SUPPORT=1")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s TOTAL_MEMORY=268435456")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s ALLOW_MEMORY_GROWTH=1 -s FORCE_FILESYSTEM=1")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --bind --no-heap-copy --preload-file assets/")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --bind --preload-file assets/ --post-js ../../src/detectorsz_helper.js --no-heap-copy")
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}../../../webapp)
     set(OpenCV_DIR "/home/vagrant/opencv/build_wasm2")
     include_directories("/home/vagrant/emsdk/emscripten/1.38.31/system/include/")
@@ -38,15 +38,12 @@ link_directories(${OpenCV_LIB_DIR})
 
 set(SOURCE_APP src/imageprocess.cpp
     src/facedetect.cpp
-    src/imageprocessapp.cpp
-    src/facedetectapp.cpp
     src/imagewrapper.cpp
 )
 
-set(SOURCE_WEBAPP src/imageprocess.cpp
+set(SOURCE_WEBAPP src/detectorsz_bind_js.cpp
+    src/imageprocess.cpp
     src/facedetect.cpp
-    src/imageprocessweb.cpp
-    src/facedetectweb.cpp
     src/imagewrapper.cpp
 )
 

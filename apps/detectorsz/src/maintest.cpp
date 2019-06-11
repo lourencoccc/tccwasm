@@ -31,7 +31,6 @@ int main(int argc, char **argv) {
   Mat cvDest{dest.rows, dest.cols, dest.cvType, dest.getData()};
   imwrite("lenaGray.jpg", cvDest);
 
-
   FaceDetect faceDetect;
   faceDetect.faceDetect(src, dest);
   Mat cvDestFace{dest.rows, dest.cols, dest.cvType, dest.getData()};
@@ -44,5 +43,8 @@ int main(int argc, char **argv) {
   dest.~ImageWrapper();
   imgprc.~ImageProcess();
   faceDetect.~FaceDetect();
+
+  destroyAllWindows();
+
   return 0;
 }

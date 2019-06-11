@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <head>
   <meta charset="utf-8">
@@ -15,7 +16,6 @@
     }
   </style>
 </head>
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <body>
   <section id="imgproc">
@@ -42,127 +42,33 @@
   </section>
 
   <script type="text/javascript">
-    function _freeArray(heapBytes) {
-      Module._free(heapBytes.byteOffset);
-    }
-    function _arrayToHeap(typedArray) {
-      var numBytes = typedArray.length * typedArray.BYTES_PER_ELEMENT;
-      var ptr = Module._malloc(numBytes);
-      heapBytes = Module.HEAPU8.subarray(ptr, ptr + numBytes);
-      heapBytes.set(typedArray);
-      return heapBytes;
-    }
-
-    function drawImageSource() {
-      var canvas = document.getElementById('lena');
-      if (canvas.getContext) {
-        var ctx = canvas.getContext('2d');
-        var img = new Image();
-        img.src = 'images/lena.png';
-        img.onload = function () {
-          context.drawImage(img, 0, 0);
-        }
-      }
-    }
-
-    const readImage = (imageSource, imageWrapper) => {
-      var img = null;
-      if (typeof imageSource === 'string') {
-        img = document.getElementById(imageSource);
-      } else {
-        img = imageSource;
-      }
-      var canvas = null;
-      var ctx = null;
-      if (img instanceof HTMLImageElement) {
-        canvas = document.createElement('canvas');
-        canvas.width = img.width;
-        canvas.height = img.height;
-        ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, img.width, img.height);
-      } else if (img instanceof HTMLCanvasElement) {
-        canvas = img;
-        ctx = canvas.getContext('2d');
-      } else {
-        throw new Error('Please input the valid canvas or img id.');
-        return;
-      }
-      var imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      imageWrapper.rows = canvas.height;
+    const readImage2 = (imageSource, imageWrapper) => {
+      let canvas = Module._extractCanvasElement(imageSource);
+      let imgData = canvas.getContext('2d').getImageData(
+        0, 0, canvas.width, canvas.height);
+      imageWrapper.rows.set(canvas.height);
       imageWrapper.cols = canvas.width;
-      var heapBytes = _arrayToHeap(imgData.data);
       imageWrapper.size = imgData.data.length;
-      imageWrapper.copyData(heapBytes.byteOffset);
-      _freeArray(heapBytes);
+      imageWrapper.data.set(imgData.data);
     };
-
-    const showImage = (canvasSource, imageWrapper) => {
-      var canvas = null;
-      if (typeof canvasSource === 'string') {
-        canvas = document.getElementById(canvasSource);
-      } else {
-        canvas = canvasSource;
-      }
-      if (!(canvas instanceof HTMLCanvasElement)) {
-        throw new Error('Please input the valid canvas element or id.');
-        return;
-      }
-      var imgData = new ImageData(new Uint8ClampedArray(imageWrapper.getData()), imageWrapper.cols, imageWrapper.rows);
-      var ctx = canvas.getContext('2d');
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      canvas.width = imgData.width;
-      canvas.height = imgData.height;
-      ctx.putImageData(imgData, 0, 0);
-    };
-
-    const VideoCapture = function (videoSource) {
-      var video = null;
-      if (typeof videoSource === 'string') {
-        video = document.getElementById(videoSource);
-      } else {
-        video = videoSource;
-      }
-      if (!(video instanceof HTMLVideoElement)) {
-        throw new Error('Please input the valid video element or id.');
-        return;
-      }
-      var canvas = document.createElement('canvas');
-      canvas.width = video.width;
-      canvas.height = video.height;
-      var ctx = canvas.getContext('2d');
-      this.video = video;
-      this.read = (imageWrapper) => {
-        ctx.drawImage(video, 0, 0, video.width, video.height);
-        imageWrapper.rows = video.height;
-        imageWrapper.cols = video.width;
-        var imgData = ctx.getImageData(0, 0, video.width, video.height);
-        var heapBytes = _arrayToHeap(imgData.data);
-        imageWrapper.size = imgData.data.length;
-        imageWrapper.copyData(heapBytes.byteOffset);
-        _freeArray(heapBytes);
-      };
-    };
-
     let streaming = false;
-
     const video = document.getElementById("video");
-    let stream = null;
-    let vc = null;
-    let filter = null;
-    let width = 512;
-    let height = 0;
-    let faceDetect = null;
-
+    var stream = null;
+    var vc = null;
+    var filter = null;
+    var width = 512;
+    var height = 0;
+    var faceDetect = null;
 
     function processVideo() {
-      var src = new Module.ImageWrapper();
-      var dest = new Module.ImageWrapper();
+      let src = new Module.ImageWrapper();
+      let dest = new Module.ImageWrapper();
       vc.read(src);
       faceDetect.faceDetect(src, dest);
-      showImage('videocam', dest);
+      Module.showImage('videocam', dest);
+      requestAnimationFrame(processVideo);
       src.delete();
       dest.delete();
-      requestAnimationFrame(processVideo);
     }
 
     function stopVideoProcessing() {
@@ -177,6 +83,7 @@
       faceDetect = new Module.FaceDetect();
       requestAnimationFrame(processVideo);
     }
+
     function startCamera() {
       if (streaming) return;
       navigator.mediaDevices.getUserMedia({ video: true, audio: false })
@@ -195,7 +102,7 @@
           video.setAttribute("width", width);
           video.setAttribute("height", height);
           streaming = true;
-          vc = new VideoCapture(video);
+          vc = new Module.VideoCapture(video);
         }
         startVideoProcessing();
       }, false);
@@ -219,48 +126,48 @@
     const minusbutton = document.getElementById("minusbutton");
     const divbutton = document.getElementById("divbutton");
 
-
     const calcPlusEvent = (event) => {
-      var src = new Module.ImageWrapper();
-      var dest = new Module.ImageWrapper();
-      var imgpro = new Module.ImageProcess();
-      readImage("lena", src);
+      let src = new Module.ImageWrapper();
+      let dest = new Module.ImageWrapper();
+      let imgpro = new Module.ImageProcess();
+      Module.readImage("lena", src);
+      //readImage2("lena", src);
       imgpro.gray(src, dest);
-      showImage('lena1', dest);
+      Module.showImage('lena1', dest);
       imgpro.delete();
       src.delete();
       dest.delete();
     };
 
     const calcMinusEvent = (event) => {
-      var src = new Module.ImageWrapper();
-      var dest = new Module.ImageWrapper();
-      var imgpro = new Module.ImageProcess();
-      readImage("lena", src);
+      let src = new Module.ImageWrapper();
+      let dest = new Module.ImageWrapper();
+      let imgpro = new Module.ImageProcess();
+      Module.readImage("lena", src);
       imgpro.hsv(src, dest);
-      showImage('lena2', dest);
+      Module.showImage('lena2', dest);
       imgpro.delete();
       src.delete();
       dest.delete();
     };
 
     const calcDivEvent = (event) => {
-      var src = new Module.ImageWrapper();
-      var dest = new Module.ImageWrapper();
-      var imgpro = new Module.ImageProcess();
-      readImage("lena", src);
+      let src = new Module.ImageWrapper();
+      let dest = new Module.ImageWrapper();
+      let imgpro = new Module.ImageProcess();
+      Module.readImage("lena", src);
       imgpro.gray(src, dest);
-      showImage('lena2', dest);
+      Module.showImage('lena2', dest);
       imgpro.delete();
       src.delete();
       dest.delete();
     };
 
     function drawImage() {
-      var canvas = document.getElementById('lena');
+      let canvas = document.getElementById('lena');
       if (canvas.getContext) {
-        var ctx = canvas.getContext('2d');
-        var img = new Image();
+        let ctx = canvas.getContext('2d');
+        let img = new Image();
         img.src = 'images/lena.png';
         img.onload = function () {
           ctx.drawImage(img, 0, 0, 512, 512);

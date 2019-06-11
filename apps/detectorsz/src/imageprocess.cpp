@@ -71,7 +71,26 @@ void convertAnyMatToRGB(cv::Mat &src, cv::Mat &dest) {
   }
 }
 
-void convertAnyMatTo8U(cv::Mat &src, cv::Mat &dest){
+void convertAnyMatToGray(cv::Mat &src, cv::Mat &dest) {
+  convertAnyMatTo8U(src, dest);
+  // convert the img type to cv.CV_8UC1
+  switch (dest.type()) {
+  case CV_8UC1:
+    break;
+  case CV_8UC3:
+    cvtColor(dest, dest, COLOR_RGB2GRAY);
+    break;
+  case CV_8UC4:
+    cvtColor(dest, dest, COLOR_RGBA2GRAY);
+    break;
+  default:
+    throw runtime_error(
+        "Bad number of channels (Source image must have 1, 3 or 4 channels)");
+    return;
+  }
+}
+
+void convertAnyMatTo8U(cv::Mat &src, cv::Mat &dest) {
   // convert the mat type to cv.CV_8U
   int depth = src.type() % 8;
   int scale = depth <= CV_8S ? 1.0 : (depth <= CV_32S ? 1.0 / 256.0 : 255.0);

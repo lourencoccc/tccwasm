@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>WASM & OpenCV - MyImageProc</title>
+  <style type="text/css">
+    canvas {
+      border: 1px solid black;
+    }
+
+    .invisible {
+      display: none;
+    }
+
+    .info {
+      background-color: aqua;
+    }
+
+    .error {
+      background-color: red;
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+  <section id="imgproc">
+    <div id="message"></div>
+    <input id="inputFile" type="file" accept="video/mp4" />
+  </section>
+  <section id="imgproc_video">
+    <p>
+      <div class="">
+        <video id="video" controls autoplay>Your browser does not support the video tag.</video>
+      </div>
+      <canvas id="videocam" width="512" height="384">
+      </canvas>
+    </p>
+  </section>
+
+  <script type="text/javascript">
+    let streaming = false;
+    const video = document.getElementById("video");
+    var vc = null;
+    var filter = null;
+    var width = 512;
+    var height = 0;
+    var faceDetect = null;
+
+    const showMessage = (message, isError) => {
+      var element = document.getElementById('message')
+      element.innerHTML = message
+      element.className = isError ? 'error' : 'info'
+    }
+
+    const playSelectedFile = function(event) {
+      let file = this.files[0]
+      let type = file.type
+      let videoNode = document.getElementById('video')
+      let canPlay = videoNode.canPlayType(type)
+      if (canPlay === '') canPlay = 'no'
+      let message = 'Can play type "' + type + '": ' + canPlay
+      let isError = canPlay === 'no'
+      showMessage(message, isError)
+      if (isError) {
+        return
+      }
+      let fileURL = URL.createObjectURL(file)
+      videoNode.src = fileURL
+    }
+
+    function processVideo() {
+      let src = new Module.ImageWrapper();
+      let dest = new Module.ImageWrapper();
+      vc.read(src);
+      faceDetect.faceDetectWithLog(src, dest);
+      Module.showImage('videocam', dest);
+      requestAnimationFrame(processVideo);
+      src.delete();
+      dest.delete();
+    }
+
+    function stopVideoProcessing() {
+      if (faceDetect != null && !faceDetect.isDeleted()) {
+        faceDetect.delete();
+      }
+    }
+
+    function startVideoProcessing() {
+      if (!streaming) { console.warn("Please select the video."); return; }
+      stopVideoProcessing();
+      faceDetect = new Module.FaceDetect();
+      requestAnimationFrame(processVideo);
+    }
+
+    function startCamera() {
+      if (streaming) return;
+      let inputFile = document.getElementById('inputFile')
+      inputFile.addEventListener('change', playSelectedFile, false);
+      video.addEventListener("canplay", function (ev) {
+        if (!streaming) {
+          height = video.videoHeight / (video.videoWidth / width);
+          video.setAttribute("width", width);
+          video.setAttribute("height", height);
+          streaming = true;
+          vc = new Module.VideoCapture(video);
+        }
+        startVideoProcessing();
+      }, false);
+      video.addEventListener("ended", function (ev) {
+        stopCamera();
+      }, false);
+    }
+
+    function stopCamera() {
+      if (!streaming) return;
+      stopVideoProcessing();
+      document.getElementById("videocam").getContext("2d").clearRect(0, 0, width, height);
+      streaming = false;
+    }
+
+
+
+    function drawImage() {
+      let canvas = document.getElementById('lena');
+      if (canvas.getContext) {
+        let ctx = canvas.getContext('2d');
+        let img = new Image();
+        img.src = 'images/lena.png';
+        img.onload = function () {
+          ctx.drawImage(img, 0, 0, 512, 512);
+        }
+      }
+    }
+
+    const init = () => {
+      console.log("WebAssembly is up!");
+      startCamera();
+    };
+
+    var Module = {
+      preRun: [],
+      postRun: [init],
+      print: function (text) {
+        if (arguments.length > 1) text = Array.prototype.slice.call(arguments).join(' ');
+        console.log(text);
+      },
+      printErr: function (text) {
+        if (arguments.length > 1) text = Array.prototype.slice.call(arguments).join(' ');
+        console.error(text);
+      },
+    };
+  </script>
+  <script async type="text/javascript" src="detectorsz.js"></script>
+</body>'
+
+</html>
