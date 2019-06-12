@@ -1,19 +1,14 @@
-Module['readImage'] = (imageSource, imageWrapper) => {
+Module['readImage'] = (imageSource) => {
   let canvas = Module._extractCanvasElement(imageSource);
   let imgData = canvas.getContext('2d').getImageData(
     0, 0, canvas.width, canvas.height);
-  let heapBytes = Module._arrayToHeap(imgData.data);
-  imageWrapper.rows = canvas.height;
-  imageWrapper.cols = canvas.width;
-  imageWrapper.size = imgData.data.length;
-  imageWrapper.copyData(heapBytes.byteOffset);
-  Module._freeArray(heapBytes);
+  return Module.MatAdapterFromImageData(imgData);
 };
 
-Module['showImage'] = (canvasSource, imageWrapper) => {
+Module['showImage'] = (canvasSource, MatAdapter) => {
   let canvas = Module._getCanvasElement(canvasSource)
   let imgData = new ImageData(new Uint8ClampedArray(
-    imageWrapper.getData()), imageWrapper.cols, imageWrapper.rows);
+    MatAdapter.data), MatAdapter.getCols(), MatAdapter.getRows());
   let ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   canvas.width = imgData.width;
@@ -28,15 +23,9 @@ Module['VideoCapture'] = function (videoSource) {
   canvas.height = video.height;
   let ctx = canvas.getContext('2d');
   this.video = video;
-  this.read = (imageWrapper) => {
+  this.read = () => {
     ctx.drawImage(video, 0, 0, video.width, video.height);
-    imageWrapper.rows = video.height;
-    imageWrapper.cols = video.width;
-    let imgData = ctx.getImageData(0, 0, video.width, video.height);
-    let heapBytes = Module._arrayToHeap(imgData.data);
-    imageWrapper.size = imgData.data.length;
-    imageWrapper.copyData(heapBytes.byteOffset);
-    Module._freeArray(heapBytes);
+    return Module.MatAdapterFromImageData(ctx.getImageData(0, 0, video.width, video.height));
   };
 };
 
@@ -98,3 +87,10 @@ Module['_getCanvasElement'] = (canvasSource) => {
   }
   return canvas;
 }
+
+
+Module['MatAdapterFromImageData'] = function(imageData) {
+  let mat = new Module.MatAdapter(imageData.height, imageData.width);
+  mat.data.set(imageData.data);
+  return mat;
+};

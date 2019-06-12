@@ -191,7 +191,7 @@ Module['FS_createPath']('/', 'assets', true, true);
   }
 
  }
- loadPackage({"files": [{"start": 0, "audio": 0, "end": 601661, "filename": "/assets/haarcascade_eye_tree_eyeglasses.xml"}, {"start": 601661, "audio": 0, "end": 1278370, "filename": "/assets/haarcascade_frontalface_alt.xml"}], "remote_package_size": 1278370, "package_uuid": "b2e2a991-267e-4320-bbdd-1bb3084fd4ab"});
+ loadPackage({"files": [{"start": 0, "audio": 0, "end": 601661, "filename": "/assets/haarcascade_eye_tree_eyeglasses.xml"}, {"start": 601661, "audio": 0, "end": 1278370, "filename": "/assets/haarcascade_frontalface_alt.xml"}], "remote_package_size": 1278370, "package_uuid": "3ac8556b-bd64-46cf-a3db-616c927900b4"});
 
 })();
 
@@ -1417,11 +1417,11 @@ function updateGlobalBufferViews() {
 
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 202288,
+    STACK_BASE = 202304,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 5445168,
-    DYNAMIC_BASE = 5445168,
-    DYNAMICTOP_PTR = 202256;
+    STACK_MAX = 5445184,
+    DYNAMIC_BASE = 5445184,
+    DYNAMICTOP_PTR = 202272;
 
 assert(STACK_BASE % 16 === 0, 'stack must start aligned');
 assert(DYNAMIC_BASE % 16 === 0, 'heap must start aligned');
@@ -1895,7 +1895,7 @@ var ASM_CONSTS = [];
 
 
 
-// STATICTOP = STATIC_BASE + 201264;
+// STATICTOP = STATIC_BASE + 201280;
 /* global initializers */  __ATINIT__.push({ func: function() { globalCtors() } });
 
 
@@ -1906,7 +1906,7 @@ var ASM_CONSTS = [];
 
 
 /* no memory initializer */
-var tempDoublePtr = 202272
+var tempDoublePtr = 202288
 assert(tempDoublePtr % 8 == 0);
 
 function copyTempFloat(ptr) { // functions, because inlining this code increases code size too much
@@ -8686,22 +8686,17 @@ run();
 
 
 
-Module['readImage'] = (imageSource, imageWrapper) => {
+Module['readImage'] = (imageSource) => {
   let canvas = Module._extractCanvasElement(imageSource);
   let imgData = canvas.getContext('2d').getImageData(
     0, 0, canvas.width, canvas.height);
-  let heapBytes = Module._arrayToHeap(imgData.data);
-  imageWrapper.rows = canvas.height;
-  imageWrapper.cols = canvas.width;
-  imageWrapper.size = imgData.data.length;
-  imageWrapper.copyData(heapBytes.byteOffset);
-  Module._freeArray(heapBytes);
+  return Module.MatAdapterFromImageData(imgData);
 };
 
-Module['showImage'] = (canvasSource, imageWrapper) => {
+Module['showImage'] = (canvasSource, MatAdapter) => {
   let canvas = Module._getCanvasElement(canvasSource)
   let imgData = new ImageData(new Uint8ClampedArray(
-    imageWrapper.getData()), imageWrapper.cols, imageWrapper.rows);
+    MatAdapter.data), MatAdapter.getCols(), MatAdapter.getRows());
   let ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   canvas.width = imgData.width;
@@ -8716,15 +8711,9 @@ Module['VideoCapture'] = function (videoSource) {
   canvas.height = video.height;
   let ctx = canvas.getContext('2d');
   this.video = video;
-  this.read = (imageWrapper) => {
+  this.read = () => {
     ctx.drawImage(video, 0, 0, video.width, video.height);
-    imageWrapper.rows = video.height;
-    imageWrapper.cols = video.width;
-    let imgData = ctx.getImageData(0, 0, video.width, video.height);
-    let heapBytes = Module._arrayToHeap(imgData.data);
-    imageWrapper.size = imgData.data.length;
-    imageWrapper.copyData(heapBytes.byteOffset);
-    Module._freeArray(heapBytes);
+    return Module.MatAdapterFromImageData(ctx.getImageData(0, 0, video.width, video.height));
   };
 };
 
@@ -8786,4 +8775,11 @@ Module['_getCanvasElement'] = (canvasSource) => {
   }
   return canvas;
 }
+
+
+Module['MatAdapterFromImageData'] = function(imageData) {
+  let mat = new Module.MatAdapter(imageData.height, imageData.width);
+  mat.data.set(imageData.data);
+  return mat;
+};
 

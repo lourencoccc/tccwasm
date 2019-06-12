@@ -8,31 +8,6 @@ using namespace cv;
 
 namespace detectorsz {
 
-ImageProcess::ImageProcess() {}
-
-ImageProcess::~ImageProcess() {}
-
-void ImageProcess::gray(ImageWrapper &srcImg, ImageWrapper &destImg) {
-  Mat src{srcImg.rows, srcImg.cols, srcImg.cvType, srcImg.getData()};
-  Mat dest;
-  cvtColor(src, dest, COLOR_BGR2GRAY);
-  convertAnyMatToRGBA(dest, dest);
-  copyMatToImageWrapper(dest, destImg);
-  src.release();
-  dest.release();
-}
-
-void ImageProcess::hsv(ImageWrapper &srcImg, ImageWrapper &destImg) {
-  Mat src{srcImg.rows, srcImg.cols, srcImg.cvType, srcImg.getData()};
-  Mat dest;
-  cvtColor(src, dest, COLOR_RGBA2RGB);
-  cvtColor(dest, dest, COLOR_RGB2HSV);
-  convertAnyMatToRGBA(dest, dest);
-  copyMatToImageWrapper(dest, destImg);
-  src.release();
-  dest.release();
-}
-
 void convertAnyMatToRGBA(cv::Mat &src, cv::Mat &dest) {
   convertAnyMatTo8U(src, dest);
   // convert the img type to cv.CV_8UC4
@@ -98,15 +73,7 @@ void convertAnyMatTo8U(cv::Mat &src, cv::Mat &dest) {
   src.convertTo(dest, CV_8U, scale, shift);
 }
 
-void copyMatToImageWrapper(cv::Mat &src, ImageWrapper &destImg) {
-  destImg.rows = src.rows;
-  destImg.cols = src.cols;
-  destImg.cvType = src.type();
-  destImg.size = matSize(src);
-  destImg.copyData(src.data);
-}
-
-size_t matSize(cv::Mat &mat) {
+size_t matSize(const cv::Mat &mat) {
   return (mat.total() * mat.elemSize()) / sizeof(unsigned char);
 }
 

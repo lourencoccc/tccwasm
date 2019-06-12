@@ -14,27 +14,27 @@
     .invisible {
       display: none;
     }
+
+    .info {
+      background-color: aqua;
+    }
+
+    .error {
+      background-color: red;
+      color: white;
+    }
   </style>
 </head>
 
 <body>
   <section id="imgproc">
-    <p>
-      <canvas id="lena" width="512" height="512">
-      </canvas>
-      <canvas id="lena1" width="512" height="512">
-      </canvas>
-      <canvas id="lena2" width="512" height="512">
-      </canvas>
-    </p>
-    <input type="button" name="plusbutton" , id="plusbutton" value="Gray">
-    <input type="button" name="minusbutton" , id="minusbutton" value="HSV">
-    <input type="button" name="divbutton" , id="divbutton" value="Gray Pointer">
+    <div id="message"></div>
+    <input id="inputFile" type="file" accept="video/mp4" />
   </section>
   <section id="imgproc_video">
     <p>
       <div class="">
-        <video id="video" class="hidden">Your browser does not support the video tag.</video>
+        <video id="video" controls autoplay>Your browser does not support the video tag.</video>
       </div>
       <canvas id="videocam" width="512" height="384">
       </canvas>
@@ -44,16 +44,37 @@
   <script type="text/javascript">
     let streaming = false;
     const video = document.getElementById("video");
-    var stream = null;
     var vc = null;
     var filter = null;
     var width = 512;
     var height = 0;
     var faceDetect = null;
 
+    const showMessage = (message, isError) => {
+      var element = document.getElementById('message')
+      element.innerHTML = message
+      element.className = isError ? 'error' : 'info'
+    }
+
+    const playSelectedFile = function (event) {
+      let file = this.files[0]
+      let type = file.type
+      let videoNode = document.getElementById('video')
+      let canPlay = videoNode.canPlayType(type)
+      if (canPlay === '') canPlay = 'no'
+      let message = 'Can play type "' + type + '": ' + canPlay
+      let isError = canPlay === 'no'
+      showMessage(message, isError)
+      if (isError) {
+        return
+      }
+      let fileURL = URL.createObjectURL(file)
+      videoNode.src = fileURL
+    }
+
     function processVideo() {
       let src = vc.read();
-      faceDetect.faceDetect(src);
+      faceDetect.faceDetectWithLog(src);
       Module.showImage('videocam', src);
       requestAnimationFrame(processVideo);
       src.delete();
@@ -66,7 +87,7 @@
     }
 
     function startVideoProcessing() {
-      if (!streaming) { console.warn("Please startup your webcam"); return; }
+      if (!streaming) { console.warn("Please select the video."); return; }
       stopVideoProcessing();
       faceDetect = new Module.FaceDetect();
       requestAnimationFrame(processVideo);
@@ -74,16 +95,8 @@
 
     function startCamera() {
       if (streaming) return;
-      navigator.mediaDevices.getUserMedia({ video: true, audio: false })
-        .then(function (s) {
-          stream = s;
-          video.srcObject = s;
-          video.play();
-        })
-        .catch(function (err) {
-          console.log("An error occured! " + err);
-        });
-
+      let inputFile = document.getElementById('inputFile')
+      inputFile.addEventListener('change', playSelectedFile, false);
       video.addEventListener("canplay", function (ev) {
         if (!streaming) {
           height = video.videoHeight / (video.videoWidth / width);
@@ -94,58 +107,19 @@
         }
         startVideoProcessing();
       }, false);
+      video.addEventListener("ended", function (ev) {
+        stopCamera();
+      }, false);
     }
 
     function stopCamera() {
       if (!streaming) return;
       stopVideoProcessing();
       document.getElementById("videocam").getContext("2d").clearRect(0, 0, width, height);
-      video.pause();
-      video.srcObject = null;
-      stream.getVideoTracks()[0].stop();
       streaming = false;
     }
 
-    const canvasLena = document.getElementById('lena');
-    const canvasLena1 = document.getElementById('lena1');
-    const canvasLena2 = document.getElementById('lena2');
 
-    const plusbutton = document.getElementById("plusbutton");
-    const minusbutton = document.getElementById("minusbutton");
-    const divbutton = document.getElementById("divbutton");
-
-    const calcPlusEvent = (event) => {
-      let dest = new Module.MatAdapter();
-      let imgpro = new Module.ImageProcess();
-      let src = Module.readImage("lena");
-      imgpro.gray(src, dest);
-      Module.showImage('lena1', dest);
-      imgpro.delete();
-      src.delete();
-      dest.delete();
-    };
-
-    const calcMinusEvent = (event) => {
-      let dest = new Module.MatAdapter();
-      let imgpro = new Module.ImageProcess();
-      let src = Module.readImage("lena");
-      imgpro.hsv(src, dest);
-      Module.showImage('lena2', dest);
-      imgpro.delete();
-      src.delete();
-      dest.delete();
-    };
-
-    const calcDivEvent = (event) => {
-      let dest = new Module.MatAdapter();
-      let imgpro = new Module.ImageProcess();
-      let src = Module.readImage("lena");
-      imgpro.gray(src, dest);
-      Module.showImage('lena2', dest);
-      imgpro.delete();
-      src.delete();
-      dest.delete();
-    };
 
     function drawImage() {
       let canvas = document.getElementById('lena');
@@ -161,10 +135,6 @@
 
     const init = () => {
       console.log("WebAssembly is up!");
-      drawImage();
-      plusbutton.addEventListener('click', calcPlusEvent);
-      minusbutton.addEventListener('click', calcMinusEvent);
-      divbutton.addEventListener('click', calcDivEvent);
       startCamera();
     };
 

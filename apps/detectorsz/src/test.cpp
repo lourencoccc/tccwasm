@@ -11,7 +11,7 @@ using namespace detectorsz;
 
 unsigned char *_data = nullptr;
 
-void copyMatData(Mat &src){
+void copyMatData(Mat &src) {
   _data = nullptr;
   delete[] _data;
   _data = new unsigned char[matSize(src)];
@@ -21,7 +21,6 @@ void copyMatData(Mat &src){
 int main(int argc, char **argv) {
 
   VideoCapture video("D:/imgdata/McgillReal-worldDatabase.mp4");
-
   // Check if camera opened successfully
   if (!video.isOpened()) {
     cout << "Error opening video stream or file" << endl;
@@ -29,7 +28,6 @@ int main(int argc, char **argv) {
   }
 
   FaceDetect faceDetect;
-
 
   while (1) {
     Mat frame;
@@ -40,29 +38,19 @@ int main(int argc, char **argv) {
     if (frame.empty())
       break;
 
-    // Display the resulting frame
-    ImageWrapper src {frame.rows, frame.cols, frame.type(), matSize(frame)};
-    src.data = frame.data;
+    // Display the resulting frame]
+    MatAdapter matWSrc{frame.rows, frame.cols, frame.type()};
+    matWSrc.setData(frame.data);
 
-    ImageWrapper dest;
-    faceDetect.faceDetect(src, dest);
+    faceDetect.faceDetectWithLog(matWSrc);
 
-    Mat cvDestFace{dest.rows, dest.cols, dest.cvType, dest.data};
+    imshow("Frame", matWSrc.matImg);
 
-    imshow("Frame", frame);
-
-    imshow("Frame cvDestFace", cvDestFace);
-
-    //frame.release();
-    //src.~ImageWrapper();
-    //dest.~ImageWrapper();
     // Press  ESC on keyboard to exit
     char c = (char)waitKey(25);
     if (c == 27)
       break;
   }
-  //src.~ImageWrapper();
-
   faceDetect.~FaceDetect();
   return 0;
 }
