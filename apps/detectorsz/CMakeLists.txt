@@ -7,7 +7,7 @@ set (crosscompile_VERSION_MINOR 0)
 if(UNIX AND NOT APPLE)
     set(LINUX TRUE)
 endif()
-#-s ALLOW_MEMORY_GROWTH=1
+
 if(WASM)
     message(">>> WebAssembly - WASM=${WASM}")
     set(CMAKE_C_COMPILER "emcc")

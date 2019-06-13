@@ -191,7 +191,7 @@ Module['FS_createPath']('/', 'assets', true, true);
   }
 
  }
- loadPackage({"files": [{"start": 0, "audio": 0, "end": 601661, "filename": "/assets/haarcascade_eye_tree_eyeglasses.xml"}, {"start": 601661, "audio": 0, "end": 1278370, "filename": "/assets/haarcascade_frontalface_alt.xml"}], "remote_package_size": 1278370, "package_uuid": "3ac8556b-bd64-46cf-a3db-616c927900b4"});
+ loadPackage({"files": [{"start": 0, "audio": 0, "end": 601661, "filename": "/assets/haarcascade_eye_tree_eyeglasses.xml"}, {"start": 601661, "audio": 0, "end": 1278370, "filename": "/assets/haarcascade_frontalface_alt.xml"}], "remote_package_size": 1278370, "package_uuid": "842bc7f5-82d5-4c8d-91c4-78ec7613c38a"});
 
 })();
 
@@ -8685,6 +8685,27 @@ run();
 // {{MODULE_ADDITIONS}}
 
 
+
+/*
+Copyright 2019, Joao Lourenco Souza Junior, all rights reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 Module['readImage'] = (imageSource) => {
   let canvas = Module._extractCanvasElement(imageSource);
