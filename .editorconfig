@@ -55,6 +55,7 @@ end_of_line = crlf
 
 # Makefiles
 [Makefile]
+indent_size = 8
 indent_style = tab
 
 # Indentation override for all C/C++
