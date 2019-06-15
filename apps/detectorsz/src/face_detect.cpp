@@ -19,12 +19,11 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#include "detectorsz/detectorsz.hpp"
+
 #include <chrono>
 #include <iostream>
 #include <stdexcept>
-
-#include "detectorsz/detectorsz.hpp"
-// #include "opencv2/highgui.hpp"
 
 using namespace std;
 using namespace cv;
@@ -33,29 +32,22 @@ using namespace chrono;
 namespace detectorsz {
 
 FaceDetect::FaceDetect() {
-  std::cout << "FaceDetect Consructor" << endl;
-  if (!faceCascade.load(FACE_CASCADE_PATH)) {
-    std::cerr << "--(!)Error loading face cascade\n" << endl;
-    throw runtime_error("--(!)Error loading face cascade\n");
-    return;
-  };
-  if (!eyesCascade.load(EYES_CASCADE_PATH)) {
-    std::cerr << "--(!)Error loading eyes cascade\n" << endl;
-    throw runtime_error("--(!)Error loading eyes cascade\n");
-    return;
-  };
+  loadCascadeFiles();
+  this->dataName = "";
+}
+
+FaceDetect::FaceDetect(string dataName) {
+  loadCascadeFiles();
+  this->dataName = dataName;
 }
 
 FaceDetect::~FaceDetect() {
-  std::cout << "FaceDetect Destructor" << endl;
   faceCascade.~CascadeClassifier();
   eyesCascade.~CascadeClassifier();
   if (logs.size()) {
     logs.shrink_to_fit();
   }
 }
-
-vector<FaceEyesDetectLog> FaceDetect::getLogs() { return this->logs; }
 
 void FaceDetect::faceDetect(MatAdapter &srcImg) {
   int numFaces = 0;
@@ -69,6 +61,7 @@ void FaceDetect::faceAndEyesDetect(MatAdapter &srcImg) {
 
 void FaceDetect::faceDetectWithLog(MatAdapter &srcImg) {
   FaceEyesDetectLog log;
+  log.workloadName = this->dataName;
   log.functionName = FACE_DETECT_NAME;
   auto start = high_resolution_clock::now();
   faceDetectCount(srcImg, log.numberDetectedFaces);
@@ -79,6 +72,7 @@ void FaceDetect::faceDetectWithLog(MatAdapter &srcImg) {
 
 void FaceDetect::faceAndEyesDetectWithLog(MatAdapter &srcImg) {
   FaceEyesDetectLog log;
+  log.workloadName = this->dataName;
   log.functionName = FACE_EYES_DETECT_NAME;
   auto start = high_resolution_clock::now();
   faceAndEyesDetectCount(srcImg, log.numberDetectedFaces,
@@ -138,4 +132,40 @@ void FaceDetect::faceAndEyesDetectCount(MatAdapter &srcImg, int &numberFaces,
   convertAnyMatToRGBA(srcImg.matImg, srcImg.matImg);
   dest.release();
 }
+
+void FaceDetect::loadCascadeFiles() {
+  if (!faceCascade.load(FACE_CASCADE_PATH)) {
+    std::cerr << "--(!)Error loading face cascade\n" << endl;
+    throw runtime_error("--(!)Error loading face cascade\n");
+    return;
+  };
+  if (!eyesCascade.load(EYES_CASCADE_PATH)) {
+    std::cerr << "--(!)Error loading eyes cascade\n" << endl;
+    throw runtime_error("--(!)Error loading eyes cascade\n");
+    return;
+  };
+}
+
+string FaceDetect::logsToString() {
+  string alllog = "id;workload;function;faces_detected;eyes_detected;process_"
+                  "time_ms;total_time_ms\n";
+  for (unsigned int i = 0; i < logs.size(); i++) {
+    alllog = alllog + to_string(i) + ";" + logs[i].toString() + "\n";
+  }
+  return alllog;
+}
+
+void FaceDetect::updateTotalTime(int frameIndex, int time) {
+  logs[frameIndex].totalTime = time;
+}
+
+FaceEyesDetectLog::FaceEyesDetectLog() {}
+FaceEyesDetectLog::~FaceEyesDetectLog() {}
+string FaceEyesDetectLog::toString() {
+  return this->workloadName + ";" + this->functionName + ";" +
+         to_string(this->numberDetectedFaces) + ";" +
+         to_string(this->numberDetectedEyes) + ";" +
+         to_string(this->processTime) + ";" + to_string(this->totalTime);
+}
+
 } // namespace detectorsz

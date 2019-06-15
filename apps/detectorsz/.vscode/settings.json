@@ -15,7 +15,8 @@
         "xutility": "cpp",
         "array": "cpp",
         "initializer_list": "cpp",
-        "type_traits": "cpp"
+        "type_traits": "cpp",
+        "cmath": "cpp"
     },
     "python.pythonPath": "D:\\Apps\\Python37-32\\python.exe"
 }

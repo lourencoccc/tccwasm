@@ -59,11 +59,19 @@ struct ProcessLog {
 /**
  * @brief Information about processes executed on Face Detect functions.
  */
-struct FaceEyesDetectLog {
+class FaceEyesDetectLog {
+public:
+  FaceEyesDetectLog();
+  ~FaceEyesDetectLog();
+  string workloadName;
   string functionName;
-  int numberDetectedFaces;
-  int numberDetectedEyes;
-  int64 processTime;
+  int numberDetectedFaces = 0;
+  int numberDetectedEyes = 0;
+  int64 processTime = 0;
+  int64 totalTime = 0;
+  string toString();
+
+private:
 };
 
 /**
@@ -187,9 +195,16 @@ private:
 class FaceDetect {
 public:
   /**
+   * Log with proscess time for every workload image.
+   */
+  vector<FaceEyesDetectLog> logs;
+
+  /**
    * @brief Create a default instance of FaceDetect.
    */
   FaceDetect();
+
+  FaceDetect(string dataName);
 
   /**
    * @brief Destruct any resources of FaceDetect instance.
@@ -231,14 +246,17 @@ public:
    * @see FaceEyesDetectLog
    * @return A vector of FaceEyesDetectLog
    */
-  vector<FaceEyesDetectLog> getLogs();
+  string logsToString();
+
+  void updateTotalTime(int frameIndex, int time);
 
 private:
+  string dataName;
   cv::CascadeClassifier faceCascade;
   cv::CascadeClassifier eyesCascade;
-  vector<FaceEyesDetectLog> logs;
   void faceDetectCount(MatAdapter &src, int &numFaces);
   void faceAndEyesDetectCount(MatAdapter &src, int &numFaces, int &numEyes);
+  void loadCascadeFiles();
 };
 
 } // namespace detectorsz

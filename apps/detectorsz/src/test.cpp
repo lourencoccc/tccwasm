@@ -18,60 +18,86 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
-#include <detectorsz/detectorsz.hpp>
+#include <chrono>
+#include <fstream>
 #include <iostream>
+
+#include <opencv2/core.hpp>
+#include <opencv2/highgui.hpp>
+
+#include "detectorsz/detectorsz.hpp"
 
 using namespace std;
 using namespace cv;
+using namespace chrono;
 using namespace detectorsz;
 
-// OpenCV includes
-#include "opencv2/core.hpp"
-#include "opencv2/highgui.hpp"
-
-unsigned char *_data = nullptr;
-
-void copyMatData(Mat &src) {
-  _data = nullptr;
-  delete[] _data;
-  _data = new unsigned char[matSize(src)];
-  _data = src.data;
-}
+void runTest(string workloadName, string workloadPath);
 
 int main(int argc, char **argv) {
+  string workloadName = "WORKLOAD_1";
+  string workloadPath = "../dataset/WORKLOAD_1.mp4";
+  if (argc > 2) {
+    workloadName = argv[1];
+    workloadPath = argv[2];
+  }
+  cout << workloadName << "TCC WASM - João Lourenço Souza Jr" << endl;
+  cout << workloadName << " " << workloadPath << endl;
+  runTest(workloadName, workloadPath);
+  return 0;
+}
 
-  VideoCapture video("D:/imgdata/McgillReal-worldDatabase.mp4");
+void runTest(string workloadName, string workloadPath) {
+  VideoCapture video(workloadPath);
   // Check if camera opened successfully
   if (!video.isOpened()) {
     cout << "Error opening video stream or file" << endl;
-    return -1;
+    return;
   }
-
-  FaceDetect faceDetect;
-
+  FaceDetect faceDetect(workloadName);
+  unsigned int frameIndex = 0;
   while (1) {
+    auto start = high_resolution_clock::now();
     Mat frame;
-    // Capture frame-by-frame
+
+    // Capture frame by frame
     video.read(frame);
+
+    // Scale image to 640*480
+    Mat frameScaled{Size(640, 480), frame.type()};
+    resize(frame, frameScaled, frameScaled.size());
 
     // If the frame is empty, break immediately
     if (frame.empty())
       break;
 
-    // Display the resulting frame]
-    MatAdapter matWSrc{frame.rows, frame.cols, frame.type()};
-    matWSrc.matImg.data = frame.data;
+    // Get image data to process
+    MatAdapter matWSrc{frameScaled.rows, frameScaled.cols, frameScaled.type()};
+    matWSrc.matImg.data = frameScaled.data;
 
+    // Detect faces and log time
     faceDetect.faceDetectWithLog(matWSrc);
 
-    imshow("Frame", matWSrc.matImg);
+    // Display the resulting frame
+    imshow("TCCWASM - Test", matWSrc.matImg);
 
-    // Press  ESC on keyboard to exit
+    // Register total time for process and display image.
+    auto end = high_resolution_clock::now();
+    faceDetect.logs[frameIndex].totalTime =
+        duration_cast<milliseconds>(end - start).count();
+
+    frameIndex++;
+
+    // Press ESC on keyboard to exit
     char c = (char)waitKey(25);
     if (c == 27)
       break;
   }
+  // Recorde logs in a CSV file.
+  ofstream logFile;
+  logFile.open(workloadName + ".csv");
+  logFile << faceDetect.logsToString() << endl;
   faceDetect.~FaceDetect();
-  return 0;
+  cout << "Arquivo de log gravado em :" << workloadName << ".csv" << endl;
+  cout << "Teste do Worload "<< workloadName << " concluido com SUCESSO! :)"<< endl;
 }

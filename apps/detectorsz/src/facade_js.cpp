@@ -40,8 +40,6 @@ emscripten::val matData(const detectorsz::MatAdapter &matW) {
 } // namespace dzweb
 
 EMSCRIPTEN_BINDINGS(dzweb) {
-  emscripten::register_vector<detectorsz::FaceEyesDetectLog>(
-      "FaceEyesDetectLog");
   emscripten::class_<detectorsz::MatAdapter>("MatAdapter")
       .constructor<>()
       .constructor<int, int>()
@@ -54,17 +52,12 @@ EMSCRIPTEN_BINDINGS(dzweb) {
       .function("hsv", &detectorsz::ImageProcess::hsv);
   emscripten::class_<detectorsz::FaceDetect>("FaceDetect")
       .constructor<>()
-      .function("getLogs", &detectorsz::FaceDetect::getLogs)
+      .constructor<string>()
+      .function("logsToString", &detectorsz::FaceDetect::logsToString)
       .function("faceDetect", &detectorsz::FaceDetect::faceDetect)
       .function("faceAndEyesDetect", &detectorsz::FaceDetect::faceAndEyesDetect)
       .function("faceDetectWithLog", &detectorsz::FaceDetect::faceDetectWithLog)
       .function("faceAndEyesDetectWithLog",
-                &detectorsz::FaceDetect::faceAndEyesDetectWithLog);
-  emscripten::value_object<detectorsz::FaceEyesDetectLog>("FaceEyesDetectLog")
-      .field("functionName", &detectorsz::FaceEyesDetectLog::functionName)
-      .field("numberDetectedObjects",
-             &detectorsz::FaceEyesDetectLog::numberDetectedFaces)
-      .field("numberDetectedEyes",
-             &detectorsz::FaceEyesDetectLog::numberDetectedEyes)
-      .field("processTime", &detectorsz::FaceEyesDetectLog::processTime);
+                &detectorsz::FaceDetect::faceAndEyesDetectWithLog)
+      .function("updateTotalTime", &detectorsz::FaceDetect::updateTotalTime);
 }
