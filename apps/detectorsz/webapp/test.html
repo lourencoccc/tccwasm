@@ -26,14 +26,29 @@
   <section id="imgproc">
     <div id="message"></div>
     <input id="inputFile" type="file" accept="video/mp4" />
+    <label for="scaleResolution">Resolution</label>
+    <select name="scaleResolution" id="scaleResolution">
+      <option value="0">small (512, 384) - 196,608 px</option>
+      <option value="1">medium (768, 480) - 368,640 px</option>
+      <option value="2">large (1280, 720) - 921,600 px</option>
+    </select>
   </section>
   <section id="secVideo">
-    <div display="none">
-      <video id="videoSrc" width="512" height="288" controls autoplay>
+    <div style="display:none">
+      <video id="videoSrc" width="256" height="240" controls autoplay>
+        Your browser does not support the video tag.
+      </video>
+      <video id="videoSrcSmall" width="512" height="384" controls autoplay>
+        Your browser does not support the video tag.
+      </video>
+      <video id="videoSrcMedium" width="512" height="384" controls autoplay>
+        Your browser does not support the video tag.
+      </video>
+      <video id="videoSrcLarge" width="512" height="384" controls autoplay>
         Your browser does not support the video tag.
       </video>
     </div>
-    <canvas id="videoProcessed" width="512" height="288">
+    <canvas id="videoProcessed" width="256" height="240">
     </canvas>
   </section>
 
@@ -44,25 +59,24 @@
     var frameIndex = 0;
     var vc = null;
     var filter = null;
-    var width = 512;
-    var height = 0;
+    var width = 256;
+    var height = 240;
     var faceDetect = null;
     var workloadName = "";
 
     function processVideo() {
-      if(frameIndex > 30) {
-        stopVideo();
-      }
-      let t0 =performance.now();
+      // if(frameIndex > 30) {
+      //   stopVideo();
+      // }
+      let t0 = performance.now();
       let src = vc.read();
       faceDetect.faceDetectWithLog(src);
       Module.showImage('videoProcessed', src);
-      requestAnimationFrame(processVideo);
       src.delete();
-      let t1 =performance.now();
-      frameIndex++;
+      let t1 = performance.now();
       faceDetect.updateTotalTime(frameIndex, t1 - t0);
-
+      frameIndex++;
+      requestAnimationFrame(processVideo);
     }
 
     function stopVideo() {
@@ -119,7 +133,7 @@
         [faceDetect.logsToString()], { type: 'application/csv' });
       let elemA = document.createElement('a');
       elemA.style.display = 'none';
-      elemA.download = workloadName+ ".csv";
+      elemA.download = workloadName + ".csv";
       elemA.href = URL.createObjectURL(logData)
       document.body.appendChild(elemA);
       elemA.click();
@@ -136,9 +150,6 @@
 
       videoSrc.addEventListener("canplay", function (ev) {
         if (!streaming) {
-          height = videoSrc.videoHeight / (videoSrc.videoWidth / width);
-          videoSrc.setAttribute("width", width);
-          videoSrc.setAttribute("height", height);
           streaming = true;
           vc = new Module.VideoCapture(videoSrc);
         }

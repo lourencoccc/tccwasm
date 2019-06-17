@@ -1,4 +1,21 @@
 
+
+1. Objetivo
+
+A partir da mesmo código fonte, comparar o tempo de execução no WASM versus compilação nativa para windows 10.
+
+2. Saidas
+
+Número de faces e olhos detectados por frame.
+
+3. Metricas
+
+Tempo de execução das instruçoes de processamento de imagem
+
+4. Parametros
+
+workload, dataset (small/large), 
+
 Aplicação para medir o tempo de processamento do código de identificação de faces do opencv.
 
 
@@ -24,5 +41,32 @@ https://www.youtube.com/watch?v=RuL5jVqc4Tg
 
 
 https://ytdl-org.github.io/youtube-dl/index.html
+
+
+
+Experimento 1 
+
+Report:LOG_FACE_DETECT_DATASET_1_SMALL_WINDOWS_10_WIN32.csv
+Dataset: DATASET_1
+Workload: FACE_DETECT
+Total of frames : 3915
+Total of frames processeds: 744
+Total time: 340460
+
+Report:LOG_FACE_DETECT_DATASET_1_MEDIUM_WINDOWS_10_WIN32.csv
+Workload: FACE_DETECT
+Dataset: DATASET_1
+System: WINDOWS_10_WIN32
+Total of frames : 3915
+Total of frames processeds: 652
+Total time (ms): 364988
+
+Report:LOG_FACE_DETECT_DATASET_1_LARGE_WINDOWS_10_WIN32.csv
+Workload: FACE_DETECT
+Dataset: DATASET_1
+System: WINDOWS_10_WIN32
+Total of frames : 3915
+Total of frames processeds: 237
+Total time (ms): 451438
 
 

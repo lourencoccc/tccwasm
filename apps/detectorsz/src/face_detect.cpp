@@ -147,7 +147,7 @@ void FaceDetect::loadCascadeFiles() {
 }
 
 string FaceDetect::logsToString() {
-  string alllog = "id;workload;function;faces_detected;eyes_detected;process_"
+  string alllog = "id;dataset;workload;faces_detected;eyes_detected;process_"
                   "time_ms;total_time_ms\n";
   for (unsigned int i = 0; i < logs.size(); i++) {
     alllog = alllog + to_string(i) + ";" + logs[i].toString() + "\n";
@@ -155,17 +155,26 @@ string FaceDetect::logsToString() {
   return alllog;
 }
 
+string FaceDetect::logsToStringAndAddCommon(string head, string columns){
+  string alllog = "id,dataset,workload,faces_detected,eyes_detected,process_"
+                  "time_ms,total_time_ms" + head + "\n";
+  for (unsigned int i = 0; i < logs.size(); i++) {
+    alllog = alllog + to_string(i) + "," + logs[i].toString() + columns + "\n";
+  }
+  return alllog;
+}
+
 void FaceDetect::updateTotalTime(int frameIndex, int time) {
-  logs[frameIndex].totalTime = time;
+  logs[frameIndex].totalTime = (int64) time;
 }
 
 FaceEyesDetectLog::FaceEyesDetectLog() {}
 FaceEyesDetectLog::~FaceEyesDetectLog() {}
 string FaceEyesDetectLog::toString() {
-  return this->workloadName + ";" + this->functionName + ";" +
-         to_string(this->numberDetectedFaces) + ";" +
-         to_string(this->numberDetectedEyes) + ";" +
-         to_string(this->processTime) + ";" + to_string(this->totalTime);
+  return this->workloadName + "," + this->functionName + "," +
+         to_string(this->numberDetectedFaces) + "," +
+         to_string(this->numberDetectedEyes) + "," +
+         to_string(this->processTime) + "," + to_string(this->totalTime);
 }
 
 } // namespace detectorsz

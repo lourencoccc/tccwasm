@@ -16,7 +16,13 @@
         "array": "cpp",
         "initializer_list": "cpp",
         "type_traits": "cpp",
-        "cmath": "cpp"
+        "cmath": "cpp",
+        "thread": "cpp",
+        "stack": "cpp",
+        "deque": "cpp",
+        "string": "cpp",
+        "ostream": "cpp",
+        "fstream": "cpp"
     },
     "python.pythonPath": "D:\\Apps\\Python37-32\\python.exe"
 }

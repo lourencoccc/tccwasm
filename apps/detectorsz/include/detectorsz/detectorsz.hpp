@@ -40,8 +40,8 @@ const int CV_TYPE_DEFAULT = CV_8UC4;
 const string FACE_CASCADE_PATH = "assets/haarcascade_frontalface_alt.xml";
 const string EYES_CASCADE_PATH = "assets/haarcascade_eye_tree_eyeglasses.xml";
 
-const string FACE_DETECT_NAME = "FACE_DETECT_NAME";
-const string FACE_EYES_DETECT_NAME = "FACE_EYES_DETECT_NAME";
+const string FACE_DETECT_NAME = "FACE_DETECT";
+const string FACE_EYES_DETECT_NAME = "FACE_EYES_DETECT";
 
 /********* Utils ******/
 
@@ -65,6 +65,7 @@ public:
   ~FaceEyesDetectLog();
   string workloadName;
   string functionName;
+  string systemName;
   int numberDetectedFaces = 0;
   int numberDetectedEyes = 0;
   int64 processTime = 0;
@@ -194,6 +195,7 @@ private:
  */
 class FaceDetect {
 public:
+  string dataName;
   /**
    * Log with proscess time for every workload image.
    */
@@ -248,10 +250,11 @@ public:
    */
   string logsToString();
 
+  string logsToStringAndAddCommon(string head, string columns);
+
   void updateTotalTime(int frameIndex, int time);
 
 private:
-  string dataName;
   cv::CascadeClassifier faceCascade;
   cv::CascadeClassifier eyesCascade;
   void faceDetectCount(MatAdapter &src, int &numFaces);

@@ -21,6 +21,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <chrono>
 #include <fstream>
 #include <iostream>
+#include <mutex>
+#include <thread>
 
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
@@ -31,52 +33,141 @@ using namespace std;
 using namespace cv;
 using namespace chrono;
 using namespace detectorsz;
+namespace detectorsz {
+// constants
+enum ScaleResolution { SMALL, MEDIUM, LARGE };
+enum Workload { FACE_DETECT, FACE_EYES_DETECT };
+const cv::Size SMALL_RESOLUTION = Size(512, 384);  // 196,608
+const cv::Size MEDIUM_RESOLUTION = Size(768, 480); // 368,640
+const cv::Size LARGE_RESOLUTION = Size(1280, 720); // 921,600
 
-void runTest(string workloadName, string workloadPath);
+// properties
+mutex myMutex;
+vector<cv::Mat> frameStack;
+bool videoEnded = false;
+bool procEnded = false;
+unsigned int frameCount = 0;
+unsigned int frameProcessed = 0;
+int64 totalTime = 0;
+FaceDetect faceDetect;
 
-int main(int argc, char **argv) {
-  string workloadName = "WORKLOAD_1";
-  string workloadPath = "../dataset/WORKLOAD_1.mp4";
-  if (argc > 2) {
-    workloadName = argv[1];
-    workloadPath = argv[2];
+// parameters
+string datasetName;
+string datasetPath;
+cv::Size scaleResoution;
+Workload workloadSelected;
+unsigned int fps;
+string resolutionLabel;
+
+void configureParams(int argc, char **argv);
+
+void frameCapture();
+
+void runWorkload();
+
+void report();
+
+void configureParams(int argc, char **argv) {
+  int resolutionParam = ScaleResolution::SMALL;
+  if (argc > 5) {
+    datasetName = argv[1];
+    datasetPath = argv[2];
+    resolutionParam = stoi(argv[3]);
+    fps = stoi(argv[4]);
+    workloadSelected =
+        stoi(argv[5]) == 0 ? Workload::FACE_DETECT : Workload::FACE_EYES_DETECT;
+  } else {
+    cout << "Invalid params!" << endl;
+    cout << "Usage example: .\\detectorsz_test.exe DATASET_7"
+         << " .\\dataset\\DATASET_7.mp4 0 24 0" << endl;
+    return;
   }
-  cout << workloadName << "TCC WASM - João Lourenço Souza Jr" << endl;
-  cout << workloadName << " " << workloadPath << endl;
-  runTest(workloadName, workloadPath);
-  return 0;
+  if (ScaleResolution::SMALL == resolutionParam) {
+    scaleResoution = SMALL_RESOLUTION;
+    resolutionLabel = "SMALL";
+  } else if (ScaleResolution::MEDIUM == resolutionParam) {
+    scaleResoution = MEDIUM_RESOLUTION;
+    resolutionLabel = "MEDIUM";
+  } else if (ScaleResolution::LARGE == resolutionParam) {
+    scaleResoution = LARGE_RESOLUTION;
+    resolutionLabel = "LARGE";
+  } else {
+    cout << "Resolution to scale not supported" << endl;
+    return;
+  }
+  faceDetect.dataName = datasetName;
+  cout << datasetName << "TCC WASM - Tests" << endl;
 }
 
-void runTest(string workloadName, string workloadPath) {
-  VideoCapture video(workloadPath);
-  // Check if camera opened successfully
+void frameCapture() {
+  std::lock_guard<std::mutex> guard(myMutex);
+  VideoCapture video(datasetPath);
+
   if (!video.isOpened()) {
     cout << "Error opening video stream or file" << endl;
     return;
   }
-  FaceDetect faceDetect(workloadName);
-  unsigned int frameIndex = 0;
+
   while (1) {
-    auto start = high_resolution_clock::now();
     Mat frame;
 
     // Capture frame by frame
     video.read(frame);
 
-    // Scale image to 640*480
-    Mat frameScaled{Size(640, 480), frame.type()};
+    // cout << "Framestack size " << frameStack.size() << endl;
+    if (frameCount > 0 && frameCount % 200 == 0) {
+      cout << "Clear vector " << endl;
+      vector<cv::Mat>().swap(frameStack);
+    }
+    // cout << "Frame count " << frameCount << endl;
+
+    if (frame.empty()) {
+      videoEnded = true;
+      break;
+    }
+
+    frameCount++;
+
+    Mat frameScaled{scaleResoution, frame.type()};
     resize(frame, frameScaled, frameScaled.size());
 
-    // If the frame is empty, break immediately
-    if (frame.empty())
+    frameStack.push_back(frameScaled);
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000 / fps));
+  }
+}
+
+void runWorkload() {
+  unsigned int frameIndex = 0;
+  while (1) {
+    if (videoEnded) {
+      frameProcessed = frameIndex;
       break;
+    }
+    auto start = high_resolution_clock::now();
+    int frameID = -1;
+    Mat frame;
 
-    // Get image data to process
-    MatAdapter matWSrc{frameScaled.rows, frameScaled.cols, frameScaled.type()};
-    matWSrc.matImg.data = frameScaled.data;
+    if (frameStack.size() <= 0) {
+      continue;
+    } else {
+      frameID = frameStack.size() - 1;
+      try {
+        frameStack[frameID].copyTo(frame);
+      } catch (const std::exception &e) {
+        std::cout << e.what() << '\n';
+      }
+    }
+    MatAdapter matWSrc{frame.rows, frame.cols, frame.type()};
+    matWSrc.matImg.data = frame.data;
 
-    // Detect faces and log time
-    faceDetect.faceDetectWithLog(matWSrc);
+    if (Workload::FACE_EYES_DETECT == workloadSelected) {
+      // Detect faces and eyes with log time
+      faceDetect.faceAndEyesDetectWithLog(matWSrc);
+    } else {
+      // Detect faces with log time
+      faceDetect.faceDetectWithLog(matWSrc);
+    }
 
     // Display the resulting frame
     imshow("TCCWASM - Test", matWSrc.matImg);
@@ -85,19 +176,55 @@ void runTest(string workloadName, string workloadPath) {
     auto end = high_resolution_clock::now();
     faceDetect.logs[frameIndex].totalTime =
         duration_cast<milliseconds>(end - start).count();
-
+    // cout << "Frame index processed " << frameIndex << endl;
     frameIndex++;
-
+    matWSrc.~MatAdapter();
     // Press ESC on keyboard to exit
     char c = (char)waitKey(25);
     if (c == 27)
       break;
   }
-  // Recorde logs in a CSV file.
+}
+
+void report() {
+  // Report logs in a CSV file.
   ofstream logFile;
-  logFile.open(workloadName + ".csv");
-  logFile << faceDetect.logsToString() << endl;
+  string workloadName = workloadSelected == Workload::FACE_DETECT
+                            ? FACE_DETECT_NAME
+                            : FACE_EYES_DETECT_NAME;
+  string system = "WINDOWS_10_WIN32";
+  string reportName = "LOG_" + workloadName + "_" + datasetName + "_" +
+                      resolutionLabel + "_" + system;
+  logFile.open(reportName + ".csv");
+  string head = ",system,resolution_label";
+  string columns = "," + system + "," + resolutionLabel;
+  logFile << faceDetect.logsToStringAndAddCommon(head, columns) << endl;
+  cout << "Report:" << reportName << ".csv" << endl;
+  cout << "Workload: " << workloadName << endl;
+  cout << "Dataset: " << datasetName << endl;
+  cout << "System: " << system << endl;
+  cout << "Total of frames : " << frameCount << endl;
+  cout << "Total of frames processeds: " << frameProcessed << endl;
+  cout << "Total time of test: " << totalTime << endl;
+  logFile.close();
+  cout << "workload,dataset,resolution,system,total_frames, "
+          "total_frames_processeds,test_total_time_ms,log_file"
+       << endl;
+  cout << workloadName << "," << datasetName << "," << resolutionLabel << ","
+       << system << "," << frameCount << "," << frameProcessed << ","
+       << "," << totalTime << "," << reportName << ".csv" << endl;
+}
+} // namespace detectorsz
+
+int main(int argc, char **argv) {
+  auto start = high_resolution_clock::now();
+  configureParams(argc, argv);
+  thread t1(frameCapture);
+  runWorkload();
+  t1.join();
+  auto end = high_resolution_clock::now();
+  totalTime = duration_cast<milliseconds>(end - start).count();
+  report();
   faceDetect.~FaceDetect();
-  cout << "Arquivo de log gravado em :" << workloadName << ".csv" << endl;
-  cout << "Teste do Worload "<< workloadName << " concluido com SUCESSO! :)"<< endl;
+  return 0;
 }
