@@ -63,10 +63,13 @@ void FaceDetect::faceDetectWithLog(MatAdapter &srcImg) {
   FaceEyesDetectLog log;
   log.workloadName = this->dataName;
   log.functionName = FACE_DETECT_NAME;
+  //cout << "FACE START " << endl;
   auto start = high_resolution_clock::now();
   faceDetectCount(srcImg, log.numberDetectedFaces);
   auto end = high_resolution_clock::now();
+  //cout << "FACE END " << endl;
   log.processTime = duration_cast<milliseconds>(end - start).count();
+  //cout << "FACE END " << log.processTime << endl;
   logs.push_back(log);
 }
 
@@ -74,6 +77,7 @@ void FaceDetect::faceAndEyesDetectWithLog(MatAdapter &srcImg) {
   FaceEyesDetectLog log;
   log.workloadName = this->dataName;
   log.functionName = FACE_EYES_DETECT_NAME;
+
   auto start = high_resolution_clock::now();
   faceAndEyesDetectCount(srcImg, log.numberDetectedFaces,
                          log.numberDetectedEyes);
@@ -147,10 +151,10 @@ void FaceDetect::loadCascadeFiles() {
 }
 
 string FaceDetect::logsToString() {
-  string alllog = "id;dataset;workload;faces_detected;eyes_detected;process_"
-                  "time_ms;total_time_ms\n";
+  string alllog = "id,dataset,workload,faces_detected,eyes_detected,process_"
+                  "time_ms,total_time_ms\n";
   for (unsigned int i = 0; i < logs.size(); i++) {
-    alllog = alllog + to_string(i) + ";" + logs[i].toString() + "\n";
+    alllog = alllog + to_string(i) + "," + logs[i].toString() + "\n";
   }
   return alllog;
 }

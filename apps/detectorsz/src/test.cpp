@@ -37,45 +37,43 @@ namespace detectorsz {
 // constants
 enum ScaleResolution { SMALL, MEDIUM, LARGE };
 enum Workload { FACE_DETECT, FACE_EYES_DETECT };
-const cv::Size SMALL_RESOLUTION = Size(512, 384);  // 196,608
+const cv::Size SMALL_RESOLUTION = Size(480, 320);  // 196,608
 const cv::Size MEDIUM_RESOLUTION = Size(768, 480); // 368,640
 const cv::Size LARGE_RESOLUTION = Size(1280, 720); // 921,600
 
 // properties
 mutex myMutex;
+mutex myMutex2;
 vector<cv::Mat> frameStack;
 bool videoEnded = false;
 bool procEnded = false;
 unsigned int frameCount = 0;
-unsigned int frameProcessed = 0;
+unsigned int frameIndex = 0;
 int64 totalTime = 0;
-FaceDetect faceDetect;
 
 // parameters
 string datasetName;
 string datasetPath;
 cv::Size scaleResoution;
 Workload workloadSelected;
-unsigned int fps;
 string resolutionLabel;
 
 void configureParams(int argc, char **argv);
 
 void frameCapture();
 
-void runWorkload();
+void runWorkload(FaceDetect &faceDetect);
 
-void report();
+void report(FaceDetect &faceDetect);
 
 void configureParams(int argc, char **argv) {
   int resolutionParam = ScaleResolution::SMALL;
-  if (argc > 5) {
+  if (argc > 4) {
     datasetName = argv[1];
     datasetPath = argv[2];
     resolutionParam = stoi(argv[3]);
-    fps = stoi(argv[4]);
     workloadSelected =
-        stoi(argv[5]) == 0 ? Workload::FACE_DETECT : Workload::FACE_EYES_DETECT;
+        stoi(argv[4]) == 0 ? Workload::FACE_DETECT : Workload::FACE_EYES_DETECT;
   } else {
     cout << "Invalid params!" << endl;
     cout << "Usage example: .\\detectorsz_test.exe DATASET_7"
@@ -95,12 +93,10 @@ void configureParams(int argc, char **argv) {
     cout << "Resolution to scale not supported" << endl;
     return;
   }
-  faceDetect.dataName = datasetName;
   cout << datasetName << "TCC WASM - Tests" << endl;
 }
 
 void frameCapture() {
-  std::lock_guard<std::mutex> guard(myMutex);
   VideoCapture video(datasetPath);
 
   if (!video.isOpened()) {
@@ -114,12 +110,9 @@ void frameCapture() {
     // Capture frame by frame
     video.read(frame);
 
-    // cout << "Framestack size " << frameStack.size() << endl;
     if (frameCount > 0 && frameCount % 200 == 0) {
-      cout << "Clear vector " << endl;
       vector<cv::Mat>().swap(frameStack);
     }
-    // cout << "Frame count " << frameCount << endl;
 
     if (frame.empty()) {
       videoEnded = true;
@@ -131,19 +124,21 @@ void frameCapture() {
     Mat frameScaled{scaleResoution, frame.type()};
     resize(frame, frameScaled, frameScaled.size());
 
-    frameStack.push_back(frameScaled);
-
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000 / fps));
+    if (!frameScaled.empty()) {
+      std::lock_guard<std::mutex> guard(myMutex);
+      frameStack.push_back(frameScaled);
+    }
   }
 }
 
-void runWorkload() {
-  unsigned int frameIndex = 0;
+void runWorkload(FaceDetect &faceDetect) {
+  auto start = high_resolution_clock::now();
   while (1) {
+
     if (videoEnded) {
-      frameProcessed = frameIndex;
       break;
     }
+
     auto start = high_resolution_clock::now();
     int frameID = -1;
     Mat frame;
@@ -153,40 +148,43 @@ void runWorkload() {
     } else {
       frameID = frameStack.size() - 1;
       try {
+        std::lock_guard<std::mutex> guard(myMutex);
         frameStack[frameID].copyTo(frame);
+        MatAdapter matWSrc{frame.rows, frame.cols, frame.type()};
+        matWSrc.matImg.data = frame.data;
+
+        if (Workload::FACE_EYES_DETECT == workloadSelected) {
+          // Detect faces and eyes with log time
+          faceDetect.faceAndEyesDetectWithLog(matWSrc);
+        } else {
+          // Detect faces with log time
+          faceDetect.faceDetectWithLog(matWSrc);
+        }
+
+        // Display the resulting frame
+        imshow("TCCWASM - Test", matWSrc.matImg);
+
+        // Register total time for process and display image.
+        auto end = high_resolution_clock::now();
+        faceDetect.logs[frameIndex].totalTime =
+            duration_cast<milliseconds>(end - start).count();
+        frameIndex++;
+        matWSrc.~MatAdapter();
       } catch (const std::exception &e) {
         std::cout << e.what() << '\n';
       }
     }
-    MatAdapter matWSrc{frame.rows, frame.cols, frame.type()};
-    matWSrc.matImg.data = frame.data;
-
-    if (Workload::FACE_EYES_DETECT == workloadSelected) {
-      // Detect faces and eyes with log time
-      faceDetect.faceAndEyesDetectWithLog(matWSrc);
-    } else {
-      // Detect faces with log time
-      faceDetect.faceDetectWithLog(matWSrc);
-    }
-
-    // Display the resulting frame
-    imshow("TCCWASM - Test", matWSrc.matImg);
-
-    // Register total time for process and display image.
-    auto end = high_resolution_clock::now();
-    faceDetect.logs[frameIndex].totalTime =
-        duration_cast<milliseconds>(end - start).count();
-    // cout << "Frame index processed " << frameIndex << endl;
-    frameIndex++;
-    matWSrc.~MatAdapter();
     // Press ESC on keyboard to exit
     char c = (char)waitKey(25);
     if (c == 27)
       break;
   }
+  auto end = high_resolution_clock::now();
+  totalTime = duration_cast<milliseconds>(end - start).count();
+  report(faceDetect);
 }
 
-void report() {
+void report(FaceDetect &faceDetect) {
   // Report logs in a CSV file.
   ofstream logFile;
   string workloadName = workloadSelected == Workload::FACE_DETECT
@@ -204,27 +202,30 @@ void report() {
   cout << "Dataset: " << datasetName << endl;
   cout << "System: " << system << endl;
   cout << "Total of frames : " << frameCount << endl;
-  cout << "Total of frames processeds: " << frameProcessed << endl;
+  cout << "Total of frames processeds: " << frameIndex << endl;
   cout << "Total time of test: " << totalTime << endl;
   logFile.close();
-  cout << "workload,dataset,resolution,system,total_frames, "
+  logFile.open("META_"+reportName + ".csv");
+  logFile << "workload,dataset,resolution,system,total_frames,"
           "total_frames_processeds,test_total_time_ms,log_file"
        << endl;
+  logFile << workloadName << "," << datasetName << "," << resolutionLabel << ","
+       << system << "," << frameCount << "," << frameIndex << "," << totalTime
+       << "," << reportName << ".csv" << endl;
   cout << workloadName << "," << datasetName << "," << resolutionLabel << ","
-       << system << "," << frameCount << "," << frameProcessed << ","
-       << "," << totalTime << "," << reportName << ".csv" << endl;
+       << system << "," << frameCount << "," << frameIndex << "," << totalTime
+       << "," << reportName << ".csv" << endl;
+  logFile.close();
 }
 } // namespace detectorsz
 
 int main(int argc, char **argv) {
-  auto start = high_resolution_clock::now();
   configureParams(argc, argv);
-  thread t1(frameCapture);
-  runWorkload();
+  FaceDetect faceDetect(datasetName);
+  thread t1(runWorkload, faceDetect);
+  thread t2(frameCapture);
   t1.join();
-  auto end = high_resolution_clock::now();
-  totalTime = duration_cast<milliseconds>(end - start).count();
-  report();
+  t2.join();
   faceDetect.~FaceDetect();
   return 0;
 }

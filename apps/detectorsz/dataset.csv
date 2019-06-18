@@ -1,4 +1,4 @@
-id;name;extension;resolution,resolution;fps;youtube_link
-3;DATASET_1;mp4;1920x1080;24fps;https://www.youtube.com/watch?v=EWUdGRAwUpY
-2;DATASET_2;mp4;1920x1080;30fps;https://www.youtube.com/watch?v=vQtLX6pW5eA
-3;DATASET_3;mp4;1920x1080;50fps;https://www.youtube.com/watch?v=RuL5jVqc4Tg
+id,extension,resolution,fps,youtube_link
+DATASET_1,mp4,1920x1080,24,https://www.youtube.com/watch?v=EWUdGRAwUpY
+DATASET_2,mp4,1920x1080,30,https://www.youtube.com/watch?v=vQtLX6pW5eA
+DATASET_3,mp4,1920x1080,50,https://www.youtube.com/watch?v=RuL5jVqc4Tg

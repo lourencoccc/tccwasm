@@ -54,6 +54,7 @@ EMSCRIPTEN_BINDINGS(dzweb) {
       .constructor<>()
       .constructor<string>()
       .function("logsToString", &detectorsz::FaceDetect::logsToString)
+      .function("logsToStringAndAddCommon", &detectorsz::FaceDetect::logsToStringAndAddCommon)
       .function("faceDetect", &detectorsz::FaceDetect::faceDetect)
       .function("faceAndEyesDetect", &detectorsz::FaceDetect::faceAndEyesDetect)
       .function("faceDetectWithLog", &detectorsz::FaceDetect::faceDetectWithLog)

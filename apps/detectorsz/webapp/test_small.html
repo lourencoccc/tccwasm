@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <link rel="stylesheet" href="test.css">
+  <title>TCC WASM - Test Small Scale</title>
+</head>
+
+<body>
+  <section id="imgproc">
+    <div id="message"></div>
+    <input id="inputFile" type="file" accept="video/mp4" />
+  </section>
+  <section id="secVideo">
+    <div>
+      <video id="videoSrc" width="480" height="320" controls>
+        Your browser does not support the video tag.
+      </video>
+    </div>
+    <canvas id="videoProcessed" width="480" height="320">
+    </canvas>
+  </section>
+  <script type="text/javascript" src="test.js"></script>
+  <script async type="text/javascript" src="detectorsz.js"></script>
+</body>
+
+</html>

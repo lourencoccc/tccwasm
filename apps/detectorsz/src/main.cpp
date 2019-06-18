@@ -19,53 +19,51 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include <detectorsz/detectorsz.hpp>
+#include <chrono>
+#include <fstream>
 #include <iostream>
+
+#include <opencv2/core.hpp>
+#include <opencv2/highgui.hpp>
+
+#include "detectorsz/detectorsz.hpp"
 
 using namespace std;
 using namespace cv;
+using namespace chrono;
 using namespace detectorsz;
-
-// OpenCV includes
-#include "opencv2/core.hpp"
-#include "opencv2/highgui.hpp"
 
 int main(int argc, char **argv) {
 
-  // Mat color = imread(
-  //     "D:/Users/joao_lourenco/labs/tccwasm/pocs/helloopencv/images/lena.png",
-  //     IMREAD_COLOR);
+  string datasetPath = argv[1];
+  FaceDetect faceDetect("dataset");
+  VideoCapture video(datasetPath);
 
-  // if (!color.data) // Check for invalid input
-  // {
-  //   cout << "Could not open or find the image" << std::endl;
-  //   return -1;
-  // }
+  if (!video.isOpened()) {
+    cout << "Error opening video stream or file" << endl;
+    return 1;
+  }
 
-  // ImageWrapper src{color.rows, color.cols, color.type(), matSize(color)};
-  // src.copyData(color.data);
-  // ImageWrapper dest;
-  // ImageProcess imgprc;
+  while (1) {
+    Mat frame;
+    // Capture frame by frame
+    video.read(frame);
 
-  // imgprc.gray(src, dest);
+    if (frame.empty()) {
+      break;
+    }
 
-  // Mat cvDest{dest.rows, dest.cols, dest.cvType, dest.getData()};
-  // imwrite("lenaGray.jpg", cvDest);
+    Mat frameScaled{Size(480, 320), frame.type()};
+    resize(frame, frameScaled, frameScaled.size());
 
-  // FaceDetect faceDetect;
-  // faceDetect.faceDetect(src, dest);
-  // Mat cvDestFace{dest.rows, dest.cols, dest.cvType, dest.getData()};
-  // imwrite("lenaFace.jpg", cvDestFace);
-
-  // color.release();
-  // cvDest.release();
-  // cvDestFace.release();
-  // src.~ImageWrapper();
-  // dest.~ImageWrapper();
-  // imgprc.~ImageProcess();
-  // faceDetect.~FaceDetect();
-
-  // destroyAllWindows();
-
+    auto start = high_resolution_clock::now();
+    MatAdapter matWSrc{frame.rows, frame.cols, frame.type()};
+    matWSrc.matImg.data = frame.data;
+    faceDetect.faceDetectWithLog(matWSrc);
+    auto end = high_resolution_clock::now();
+    int64 totalTime = duration_cast<milliseconds>(end - start).count();
+    cout << "Total time: " << totalTime << endl;
+    cout << faceDetect.logs[faceDetect.logs.size() - 1].toString() << endl;
+  }
   return 0;
 }
