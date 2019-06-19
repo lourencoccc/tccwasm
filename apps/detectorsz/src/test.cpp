@@ -37,7 +37,7 @@ namespace detectorsz {
 // constants
 enum ScaleResolution { SMALL, MEDIUM, LARGE };
 enum Workload { FACE_DETECT, FACE_EYES_DETECT };
-const cv::Size SMALL_RESOLUTION = Size(480, 320);  // 196,608
+const cv::Size SMALL_RESOLUTION = Size(480, 320);  // 153,600
 const cv::Size MEDIUM_RESOLUTION = Size(768, 480); // 368,640
 const cv::Size LARGE_RESOLUTION = Size(1280, 720); // 921,600
 
