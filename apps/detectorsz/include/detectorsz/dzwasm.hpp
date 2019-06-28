@@ -18,23 +18,20 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+#ifndef DZWASM_HHP
+#define DZWASM_HHP
 
-#include <detectorsz/detectorsz.hpp>
+#include "detectorsz/detectorsz.hpp"
+#include <emscripten/bind.h>
 
-namespace detectorsz {
+namespace dzwasm {
 
-MatAdapter::MatAdapter() {}
+emscripten::val matRows(detectorsz::MatAdapter &matW);
 
-MatAdapter::MatAdapter(int rows, int cols) {
-  matImg.create(rows, cols, CV_8UC4);
-}
+emscripten::val matCols(detectorsz::MatAdapter &matW);
 
-MatAdapter::MatAdapter(int rows, int cols, int cvType) {
-  matImg.create(rows, cols, cvType);
-}
+emscripten::val matData(const detectorsz::MatAdapter &matW);
 
-MatAdapter::~MatAdapter() { matImg.release(); }
+} // namespace dzwasm
 
-unsigned char *MatAdapter::getData() { return matImg.data; }
-
-} // namespace detectorsz
+#endif

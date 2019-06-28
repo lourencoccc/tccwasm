@@ -18,19 +18,6 @@
 </head>
 
 <body>
-  <section id="imgproc">
-    <p>
-      <canvas id="lena" width="512" height="512">
-      </canvas>
-      <canvas id="lena1" width="512" height="512">
-      </canvas>
-      <canvas id="lena2" width="512" height="512">
-      </canvas>
-    </p>
-    <input type="button" name="plusbutton" , id="plusbutton" value="Gray">
-    <input type="button" name="minusbutton" , id="minusbutton" value="HSV">
-    <input type="button" name="divbutton" , id="divbutton" value="Gray Pointer">
-  </section>
   <section id="imgproc_video">
     <p>
       <div class="">
@@ -105,66 +92,8 @@
       stream.getVideoTracks()[0].stop();
       streaming = false;
     }
-
-    const canvasLena = document.getElementById('lena');
-    const canvasLena1 = document.getElementById('lena1');
-    const canvasLena2 = document.getElementById('lena2');
-
-    const plusbutton = document.getElementById("plusbutton");
-    const minusbutton = document.getElementById("minusbutton");
-    const divbutton = document.getElementById("divbutton");
-
-    const calcPlusEvent = (event) => {
-      let dest = new Module.MatAdapter();
-      let imgpro = new Module.ImageProcess();
-      let src = Module.readImage("lena");
-      imgpro.gray(src, dest);
-      Module.showImage('lena1', dest);
-      imgpro.delete();
-      src.delete();
-      dest.delete();
-    };
-
-    const calcMinusEvent = (event) => {
-      let dest = new Module.MatAdapter();
-      let imgpro = new Module.ImageProcess();
-      let src = Module.readImage("lena");
-      imgpro.hsv(src, dest);
-      Module.showImage('lena2', dest);
-      imgpro.delete();
-      src.delete();
-      dest.delete();
-    };
-
-    const calcDivEvent = (event) => {
-      let dest = new Module.MatAdapter();
-      let imgpro = new Module.ImageProcess();
-      let src = Module.readImage("lena");
-      imgpro.gray(src, dest);
-      Module.showImage('lena2', dest);
-      imgpro.delete();
-      src.delete();
-      dest.delete();
-    };
-
-    function drawImage() {
-      let canvas = document.getElementById('lena');
-      if (canvas.getContext) {
-        let ctx = canvas.getContext('2d');
-        let img = new Image();
-        img.src = 'images/lena.png';
-        img.onload = function () {
-          ctx.drawImage(img, 0, 0, 512, 512);
-        }
-      }
-    }
-
     const init = () => {
       console.log("WebAssembly is up!");
-      drawImage();
-      plusbutton.addEventListener('click', calcPlusEvent);
-      minusbutton.addEventListener('click', calcMinusEvent);
-      divbutton.addEventListener('click', calcDivEvent);
       startCamera();
     };
 
@@ -181,7 +110,7 @@
       },
     };
   </script>
-  <script async type="text/javascript" src="detectorsz.js"></script>
+  <script async type="text/javascript" src="detectorsz_core.js"></script>
 </body>'
 
 </html>

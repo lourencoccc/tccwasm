@@ -18,10 +18,14 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+#ifndef DZNATIVE_HHP
+#define DZNATIVE_HHP
 
 #include <chrono>
 #include <fstream>
 #include <iostream>
+#include <mutex>
+#include <thread>
 
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
@@ -33,37 +37,40 @@ using namespace cv;
 using namespace chrono;
 using namespace detectorsz;
 
-int main(int argc, char **argv) {
+namespace dznative {
 
-  string datasetPath = argv[1];
-  FaceDetect faceDetect("dataset");
-  VideoCapture video(datasetPath);
+// constants
+enum ScaleResolution { SMALL, MEDIUM, LARGE };
+enum Workload { FACE_DETECT, FACE_EYES_DETECT };
+const cv::Size SMALL_RESOLUTION = Size(480, 320);  // 153,600
+const cv::Size MEDIUM_RESOLUTION = Size(768, 480); // 368,640
+const cv::Size LARGE_RESOLUTION = Size(1280, 720); // 921,600
 
-  if (!video.isOpened()) {
-    cout << "Error opening video stream or file" << endl;
-    return 1;
-  }
+// properties
+mutex myMutex;
+mutex myMutex2;
+vector<cv::Mat> frameStack;
+bool videoEnded = false;
+bool procEnded = false;
+unsigned int frameCount = 0;
+unsigned int frameIndex = 0;
+int64 totalTime = 0;
 
-  while (1) {
-    Mat frame;
-    // Capture frame by frame
-    video.read(frame);
+// parameters
+string datasetName;
+string datasetPath;
+cv::Size scaleResoution;
+Workload workloadSelected;
+string resolutionLabel;
 
-    if (frame.empty()) {
-      break;
-    }
+void configureParams(int argc, char **argv);
 
-    Mat frameScaled{Size(480, 320), frame.type()};
-    resize(frame, frameScaled, frameScaled.size());
+void frameCapture();
 
-    auto start = high_resolution_clock::now();
-    MatAdapter matWSrc{frame.rows, frame.cols, frame.type()};
-    matWSrc.matImg.data = frame.data;
-    faceDetect.faceDetectWithLog(matWSrc);
-    auto end = high_resolution_clock::now();
-    int64 totalTime = duration_cast<milliseconds>(end - start).count();
-    cout << "Total time: " << totalTime << endl;
-    cout << faceDetect.logs[faceDetect.logs.size() - 1].toString() << endl;
-  }
-  return 0;
-}
+void runWorkload(FaceDetect &faceDetect);
+
+void report(FaceDetect &faceDetect);
+
+} // namespace dznative
+
+#endif

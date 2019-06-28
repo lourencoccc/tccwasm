@@ -65,5 +65,5 @@
         "xloctime": "cpp"
     },
     "python.pythonPath": "D:\\Apps\\Python37-32\\python.exe",
-    "C_Cpp.errorSquiggles": "Enabled"
+    "C_Cpp.errorSquiggles": "Disabled"
 }

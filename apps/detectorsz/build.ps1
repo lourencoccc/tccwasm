@@ -12,5 +12,5 @@ if (-Not (Test-Path $build_win32_dir))
     Pop-Location
 }
 Push-Location $build_win32_dir
-cmake.exe --build . --config Debug
+cmake.exe --build . --config Release
 Pop-Location

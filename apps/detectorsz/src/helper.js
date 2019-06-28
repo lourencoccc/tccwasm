@@ -23,13 +23,13 @@ Module['readImage'] = (imageSource) => {
   let canvas = Module._extractCanvasElement(imageSource);
   let imgData = canvas.getContext('2d').getImageData(
     0, 0, canvas.width, canvas.height);
-  return Module.MatAdapterFromImageData(imgData);
+  return Module.matAdapterFromImageData(imgData);
 };
 
-Module['showImage'] = (canvasSource, MatAdapter) => {
+Module['showImage'] = (canvasSource, matAdapter) => {
   let canvas = Module._getCanvasElement(canvasSource)
   let imgData = new ImageData(new Uint8ClampedArray(
-    MatAdapter.data), MatAdapter.getCols(), MatAdapter.getRows());
+    matAdapter.data), matAdapter.getCols(), matAdapter.getRows());
   let ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   canvas.width = imgData.width;
@@ -46,7 +46,7 @@ Module['VideoCapture'] = function (videoSource) {
   this.video = video;
   this.read = () => {
     ctx.drawImage(video, 0, 0, video.width, video.height);
-    return Module.MatAdapterFromImageData(ctx.getImageData(0, 0, video.width, video.height));
+    return Module.matAdapterFromImageData(ctx.getImageData(0, 0, video.width, video.height));
   };
 };
 
@@ -110,7 +110,7 @@ Module['_getCanvasElement'] = (canvasSource) => {
 }
 
 
-Module['MatAdapterFromImageData'] = function(imageData) {
+Module['matAdapterFromImageData'] = function(imageData) {
   let mat = new Module.MatAdapter(imageData.height, imageData.width);
   mat.data.set(imageData.data);
   return mat;

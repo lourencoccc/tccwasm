@@ -12,10 +12,13 @@ if(WASM)
     message(">>> WebAssembly - WASM=${WASM}")
     set(CMAKE_C_COMPILER "emcc")
     set(CMAKE_CXX_COMPILER "em++")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 --std=c++17 -s WASM=1 -s DEMANGLE_SUPPORT=1")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 --std=c++17")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s WASM=1 -s DEMANGLE_SUPPORT=1")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s TOTAL_MEMORY=268435456")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s ALLOW_MEMORY_GROWTH=1 -s FORCE_FILESYSTEM=1 --no-heap-copy")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --bind --preload-file assets/ --post-js ../../src/helper.js")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s ALLOW_MEMORY_GROWTH=1")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s FORCE_FILESYSTEM=1 --no-heap-copy")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --bind --preload-file assets/")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --post-js ../../src/helper.js")
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}../../../webapp)
     set(OpenCV_DIR "/home/vagrant/opencv/build_wasm2")
     include_directories("/home/vagrant/emsdk/emscripten/1.38.31/system/include/")
@@ -36,13 +39,13 @@ find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 link_directories(${OpenCV_LIB_DIR})
 
-set(SOURCE_APP src/image_process.cpp
+set(SOURCE_CORE src/image_process.cpp
     src/face_detect.cpp
     src/mat_adapter.cpp
     src/utils.cpp
 )
 
-set(SOURCE_WEBAPP src/facade_js.cpp
+set(SOURCE_CORE_WASM src/facade_js.cpp
     src/image_process.cpp
     src/face_detect.cpp
     src/mat_adapter.cpp
@@ -50,12 +53,11 @@ set(SOURCE_WEBAPP src/facade_js.cpp
 )
 
 if(NOT WASM)
-    add_executable(detectorsz_test src/test.cpp ${SOURCE_APP})
-    target_link_libraries(detectorsz_test ${OpenCV_LIBS})
+    add_library(detectorsz_core ${SOURCE_CORE})
 
-    add_executable(detectorsz src/main.cpp ${SOURCE_APP})
-    target_link_libraries(detectorsz ${OpenCV_LIBS})
+    add_executable(detectorsz_native src/main.cpp ${SOURCE_CORE})
+    target_link_libraries(detectorsz_native ${OpenCV_LIBS})
 else()
-    add_executable(detectorsz.html ${SOURCE_WEBAPP})
-    target_link_libraries(detectorsz.html ${OpenCV_LIBS})
+    add_executable(detectorsz_core.html ${SOURCE_CORE_WASM})
+    target_link_libraries(detectorsz_core.html ${OpenCV_LIBS})
 endif()

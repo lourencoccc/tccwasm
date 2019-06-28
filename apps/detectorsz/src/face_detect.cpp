@@ -102,7 +102,6 @@ void FaceDetect::faceDetectCount(MatAdapter &srcImg, int &numberFaces) {
             Scalar(255, 0, 255), 4);
   }
   convertAnyMatToRGBA(srcImg.matImg, srcImg.matImg);
-  dest.release();
 }
 
 void FaceDetect::faceAndEyesDetectCount(MatAdapter &srcImg, int &numberFaces,
