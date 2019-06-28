@@ -684,4 +684,5 @@ ASALocalRun/
 # BeatPulse healthcheck temp database
 healthchecksdb
 
+dataset/
 # End of https://www.gitignore.io/api/c,qt,vim,c++,cmake,linux,python,windows,vagrant,qtcreator,visualstudio,visualstudiocode
