@@ -39,3 +39,6 @@ em++   -s WASM=1    -fsigned-char -W -Wall -Werror=return-type -Werror=non-virtu
         cd D:\VMBox\tccwasm_default_1551897915300_49204
         VBoxManage createmedium disk --filename .\tccwasm.vdi --format VDI --size 51200
         VBoxManage storageattach tccwasm_default_1551897915300_49204 --storagectl "SATA Controller" --port 0 --device 0 --type hdd --medium .\tccwasm.vdi
+
+
+Media, mediana, Desvio padrão por systema, 
