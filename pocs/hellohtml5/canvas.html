@@ -112,7 +112,11 @@
         }
       }
 
-    function drawImage()
+
+    const init = () => {
+      console.log("WebAssembly is up!");
+      drawImage();
+      // mycalc = new Module.MyCalc();    function drawImage()
     {
       var canvas = document.getElementById('lena');
       if (canvas.getContext)
@@ -129,10 +133,6 @@
       }
     }
 
-    const init = () => {
-      console.log("WebAssembly is up!");
-      drawImage();
-      // mycalc = new Module.MyCalc();
       // plusbutton.addEventListener('click', calcPlusEvent);
       // minusbutton.addEventListener('click', calcMinusEvent);
       // divbutton.addEventListener('click', calcDivEvent);
