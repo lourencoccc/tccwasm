@@ -52,6 +52,8 @@ Após execução dos comando logo acima uma pasta
 ## Referências
 
 * [OpenCV no Linux](https://docs.opencv.org/4.0.1/d7/d9f/tutorial_linux_install.html)
-* [OpenCV no Windows](https://perso.uclouvain.be/allan.barrea/opencv/cmake_config.html)
+* [OpenCV no Windows](https://docs.opencv.org/4.0.1/d5/de5/tutorial_py_setup_in_windows.html)
 * [OpenCV JS](https://docs.opencv.org/4.0.1/d4/da1/tutorial_js_setup.html)
-https://docs.opencv.org/3.4/d5/de5/tutorial_py_setup_in_windows.html
+
+https://perso.uclouvain.be/allan.barrea/opencv/cmake_config.html
+https://gist.github.com/mbinna/c61dbb39bca0e4fb7d1f73b0d66a4fd1
