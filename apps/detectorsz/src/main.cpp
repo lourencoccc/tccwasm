@@ -18,9 +18,9 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-#include "detectorsz/dznative.hpp"
+#include "detectorsz/dzapp.hpp"
 
-namespace dznative {
+namespace dzapp {
 
 void configureParams(int argc, char **argv) {
   int resolutionParam = ScaleResolution::SMALL;
@@ -173,13 +173,13 @@ void report(FaceDetect &faceDetect) {
        << "," << reportName << ".csv" << endl;
   logFile.close();
 }
-} // namespace dznative
+} // namespace dzapp
 
 int main(int argc, char **argv) {
-  dznative::configureParams(argc, argv);
-  FaceDetect faceDetect(dznative::datasetName);
-  thread t1(dznative::runWorkload, faceDetect);
-  thread t2(dznative::frameCapture);
+  dzapp::configureParams(argc, argv);
+  FaceDetect faceDetect(dzapp::datasetName);
+  thread t1(dzapp::runWorkload, faceDetect);
+  thread t2(dzapp::frameCapture);
   t1.join();
   t2.join();
   faceDetect.~FaceDetect();

@@ -19,9 +19,9 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "detectorsz/dzwasm.hpp"
+#include "detectorsz/dzwebapp.hpp"
 
-namespace dzwasm {
+namespace dzwebapp {
 
 emscripten::val matRows(detectorsz::MatAdapter &matW) {
   return emscripten::val(matW.matImg.rows);
@@ -36,15 +36,15 @@ emscripten::val matData(const detectorsz::MatAdapter &matW) {
       detectorsz::matSize(matW.matImg), matW.matImg.data));
 }
 
-} // namespace dzwasm
+} // namespace dzwebapp
 
-EMSCRIPTEN_BINDINGS(dzwasm) {
+EMSCRIPTEN_BINDINGS(dzwebapp) {
   emscripten::class_<detectorsz::MatAdapter>("MatAdapter")
       .constructor<>()
       .constructor<int, int>()
-      .function("getRows", &dzwasm::matRows)
-      .function("getCols", &dzwasm::matCols)
-      .property("data", &dzwasm::matData);
+      .function("getRows", &dzwebapp::matRows)
+      .function("getCols", &dzwebapp::matCols)
+      .property("data", &dzwebapp::matData);
   emscripten::class_<detectorsz::ImageProcess>("ImageProcess")
       .constructor<>()
       .function("gray", &detectorsz::ImageProcess::gray)

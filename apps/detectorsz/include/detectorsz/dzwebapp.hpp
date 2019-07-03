@@ -18,13 +18,13 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-#ifndef DZWASM_HHP
-#define DZWASM_HHP
+#ifndef DZWEBAPP_HHP
+#define DZWEBAPP_HHP
 
 #include "detectorsz/detectorsz.hpp"
 #include <emscripten/bind.h>
 
-namespace dzwasm {
+namespace dzwebapp {
 
 emscripten::val matRows(detectorsz::MatAdapter &matW);
 
@@ -32,6 +32,6 @@ emscripten::val matCols(detectorsz::MatAdapter &matW);
 
 emscripten::val matData(const detectorsz::MatAdapter &matW);
 
-} // namespace dzwasm
+} // namespace dzwebapp
 
 #endif

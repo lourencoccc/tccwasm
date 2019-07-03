@@ -18,8 +18,8 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-#ifndef DZNATIVE_HHP
-#define DZNATIVE_HHP
+#ifndef DZAPP_HHP
+#define DZAPP_HHP
 
 #include <chrono>
 #include <fstream>
@@ -37,7 +37,7 @@ using namespace cv;
 using namespace chrono;
 using namespace detectorsz;
 
-namespace dznative {
+namespace dzapp {
 
 // constants
 enum ScaleResolution { SMALL, MEDIUM, LARGE };
@@ -71,6 +71,6 @@ void runWorkload(FaceDetect &faceDetect);
 
 void report(FaceDetect &faceDetect);
 
-} // namespace dznative
+} // namespace dzapp
 
 #endif

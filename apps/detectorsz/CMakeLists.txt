@@ -18,7 +18,7 @@ if(WASM)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s ALLOW_MEMORY_GROWTH=1")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s FORCE_FILESYSTEM=1 --no-heap-copy")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --bind --preload-file assets/")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --post-js ../../src/helper.js")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --post-js ../../src/webapp_helper.js")
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}../../../webapp)
     set(OpenCV_DIR "/home/vagrant/opencv/build_wasm2")
     include_directories("/home/vagrant/emsdk/emscripten/1.38.31/system/include/")
@@ -45,7 +45,7 @@ set(SOURCE_CORE src/image_process.cpp
     src/utils.cpp
 )
 
-set(SOURCE_CORE_WASM src/facade_js.cpp
+set(SOURCE_CORE_WASM src/webapp_facade.cpp
     src/image_process.cpp
     src/face_detect.cpp
     src/mat_adapter.cpp
@@ -55,8 +55,8 @@ set(SOURCE_CORE_WASM src/facade_js.cpp
 if(NOT WASM)
     add_library(detectorsz_core ${SOURCE_CORE})
 
-    add_executable(detectorsz_native src/main.cpp ${SOURCE_CORE})
-    target_link_libraries(detectorsz_native ${OpenCV_LIBS})
+    add_executable(detectorsz_app src/main.cpp ${SOURCE_CORE})
+    target_link_libraries(detectorsz_app ${OpenCV_LIBS})
 else()
     add_executable(detectorsz_core.html ${SOURCE_CORE_WASM})
     target_link_libraries(detectorsz_core.html ${OpenCV_LIBS})
