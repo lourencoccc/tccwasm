@@ -49,51 +49,26 @@ FaceDetect::~FaceDetect() {
   }
 }
 
-void FaceDetect::faceDetect(MatAdapter &srcImg) {
-  int numFaces = 0;
-  faceDetectCount(srcImg, numFaces);
-}
-
-void FaceDetect::faceAndEyesDetect(MatAdapter &srcImg) {
-  int numFaces, numEyes = 0;
-  faceAndEyesDetectCount(srcImg, numFaces, numEyes);
-}
-
 void FaceDetect::faceDetectWithLog(MatAdapter &srcImg) {
   FaceEyesDetectLog log;
   log.workloadName = this->dataName;
   log.functionName = FACE_DETECT_NAME;
-  //cout << "FACE START " << endl;
+  //-- Pre process
   auto start = high_resolution_clock::now();
-  faceDetectCount(srcImg, log.numberDetectedFaces);
-  auto end = high_resolution_clock::now();
-  //cout << "FACE END " << endl;
-  log.processTime = duration_cast<milliseconds>(end - start).count();
-  //cout << "FACE END " << log.processTime << endl;
-  logs.push_back(log);
-}
-
-void FaceDetect::faceAndEyesDetectWithLog(MatAdapter &srcImg) {
-  FaceEyesDetectLog log;
-  log.workloadName = this->dataName;
-  log.functionName = FACE_EYES_DETECT_NAME;
-
-  auto start = high_resolution_clock::now();
-  faceAndEyesDetectCount(srcImg, log.numberDetectedFaces,
-                         log.numberDetectedEyes);
-  auto end = high_resolution_clock::now();
-  log.processTime = duration_cast<milliseconds>(end - start).count();
-  logs.push_back(log);
-}
-
-void FaceDetect::faceDetectCount(MatAdapter &srcImg, int &numberFaces) {
   Mat dest;
   convertAnyMatToGray(srcImg.matImg, dest);
   equalizeHist(dest, dest);
-  //-- Detect faces
+  auto end = high_resolution_clock::now();
+  log.preProcTime = duration_cast<microseconds>(end - start).count();
+  //-- Detect faces process
+  start = high_resolution_clock::now();
   std::vector<Rect> faces;
   faceCascade.detectMultiScale(dest, faces);
-  numberFaces = faces.size();
+  log.numberDetectedFaces = faces.size();
+  end = high_resolution_clock::now();
+  log.processTime = duration_cast<microseconds>(end - start).count();
+  //-- Tag faces
+  start = high_resolution_clock::now();
   for (size_t i = 0; i < faces.size(); i++) {
     Point center(faces[i].x + faces[i].width / 2,
                  faces[i].y + faces[i].height / 2);
@@ -101,18 +76,97 @@ void FaceDetect::faceDetectCount(MatAdapter &srcImg, int &numberFaces) {
             Size(faces[i].width / 2, faces[i].height / 2), 0, 0, 360,
             Scalar(255, 0, 255), 4);
   }
+  end = high_resolution_clock::now();
+  log.tagProcTime = duration_cast<microseconds>(end - start).count();
+  //-- Pos process
+  start = high_resolution_clock::now();
+  convertAnyMatToRGBA(srcImg.matImg, srcImg.matImg);
+  end = high_resolution_clock::now();
+  log.posProcTime = duration_cast<microseconds>(end - start).count();
+  logs.push_back(log);
+}
+
+void FaceDetect::faceAndEyesDetectWithLog(MatAdapter &srcImg) {
+  FaceEyesDetectLog log;
+  log.workloadName = this->dataName;
+  log.functionName = FACE_EYES_DETECT_NAME;
+  //-- Pre process
+  auto start = high_resolution_clock::now();
+  Mat dest;
+  convertAnyMatToGray(srcImg.matImg, dest);
+  equalizeHist(dest, dest);
+  auto end = high_resolution_clock::now();
+  log.preProcTime = duration_cast<microseconds>(end - start).count();
+  //-- Detect faces
+  std::vector<Rect> faces;
+  start = high_resolution_clock::now();
+  faceCascade.detectMultiScale(dest, faces);
+  log.numberDetectedFaces = faces.size();
+  end = high_resolution_clock::now();
+  log.processTime = duration_cast<microseconds>(end - start).count();
+  for (size_t i = 0; i < faces.size(); i++) {
+    //-- In each face, detect eyes
+    start = high_resolution_clock::now();
+    Mat faceROI = dest(faces[i]);
+    std::vector<Rect> eyes;
+    eyesCascade.detectMultiScale(faceROI, eyes);
+    log.numberDetectedEyes = log.numberDetectedEyes + eyes.size();
+    end = high_resolution_clock::now();
+    log.processTime =
+        log.processTime + duration_cast<microseconds>(end - start).count();
+    //-- Tag process
+    start = high_resolution_clock::now();
+    Point center(faces[i].x + faces[i].width / 2,
+                 faces[i].y + faces[i].height / 2);
+    ellipse(srcImg.matImg, center,
+            Size(faces[i].width / 2, faces[i].height / 2), 0, 0, 360,
+            Scalar(255, 0, 255), 4);
+    for (size_t j = 0; j < eyes.size(); j++) {
+      Point eye_center(faces[i].x + eyes[j].x + eyes[j].width / 2,
+                       faces[i].y + eyes[j].y + eyes[j].height / 2);
+      int radius = cvRound((eyes[j].width + eyes[j].height) * 0.25);
+      circle(srcImg.matImg, eye_center, radius, Scalar(255, 0, 0), 4);
+      std::cout << "Eyes " << j << endl;
+    }
+    end = high_resolution_clock::now();
+    log.tagProcTime =
+        log.tagProcTime + duration_cast<microseconds>(end - start).count();
+  }
+  //--Pos process
+  start = high_resolution_clock::now();
+  convertAnyMatToRGBA(srcImg.matImg, srcImg.matImg);
+  end = high_resolution_clock::now();
+  log.posProcTime = duration_cast<microseconds>(end - start).count();
+  logs.push_back(log);
+}
+
+void FaceDetect::faceDetect(MatAdapter &srcImg) {
+  Mat dest;
+  //-- Pre process
+  convertAnyMatToGray(srcImg.matImg, dest);
+  equalizeHist(dest, dest);
+  //-- Detect faces
+  std::vector<Rect> faces;
+  faceCascade.detectMultiScale(dest, faces);
+  //-- Tag faces
+  for (size_t i = 0; i < faces.size(); i++) {
+    Point center(faces[i].x + faces[i].width / 2,
+                 faces[i].y + faces[i].height / 2);
+    ellipse(srcImg.matImg, center,
+            Size(faces[i].width / 2, faces[i].height / 2), 0, 0, 360,
+            Scalar(255, 0, 255), 4);
+  }
+  //-- Pos process
   convertAnyMatToRGBA(srcImg.matImg, srcImg.matImg);
 }
 
-void FaceDetect::faceAndEyesDetectCount(MatAdapter &srcImg, int &numberFaces,
-                                        int &numberEyes) {
+void FaceDetect::faceAndEyesDetect(MatAdapter &srcImg) {
   Mat dest;
   convertAnyMatToGray(srcImg.matImg, dest);
   equalizeHist(dest, dest);
   //-- Detect faces
   std::vector<Rect> faces;
   faceCascade.detectMultiScale(dest, faces);
-  numberFaces = faces.size();
   for (size_t i = 0; i < faces.size(); i++) {
     Point center(faces[i].x + faces[i].width / 2,
                  faces[i].y + faces[i].height / 2);
@@ -123,7 +177,6 @@ void FaceDetect::faceAndEyesDetectCount(MatAdapter &srcImg, int &numberFaces,
     //-- In each face, detect eyes
     std::vector<Rect> eyes;
     eyesCascade.detectMultiScale(faceROI, eyes);
-    numberEyes = eyes.size();
     for (size_t j = 0; j < eyes.size(); j++) {
       Point eye_center(faces[i].x + eyes[j].x + eyes[j].width / 2,
                        faces[i].y + eyes[j].y + eyes[j].height / 2);
@@ -151,16 +204,18 @@ void FaceDetect::loadCascadeFiles() {
 
 string FaceDetect::logsToString() {
   string alllog = "id,dataset,workload,faces_detected,eyes_detected,process_"
-                  "time_ms,total_time_ms\n";
+                  "time_us,total_time_ms\n";
   for (unsigned int i = 0; i < logs.size(); i++) {
     alllog = alllog + to_string(i) + "," + logs[i].toString() + "\n";
   }
   return alllog;
 }
 
-string FaceDetect::logsToStringAndAddCommon(string head, string columns){
-  string alllog = "id,dataset,workload,faces_detected,eyes_detected,process_"
-                  "time_ms,total_time_ms" + head + "\n";
+string FaceDetect::logsToStringAndAddCommon(string head, string columns) {
+  string alllog =
+      "id,dataset,workload,faces_detected,eyes_detected,"
+      "process_time_us,pre_time_us,tag_time_us,pos_time_us,total_time_ms" +
+      head + "\n";
   for (unsigned int i = 0; i < logs.size(); i++) {
     alllog = alllog + to_string(i) + "," + logs[i].toString() + columns + "\n";
   }
@@ -168,7 +223,7 @@ string FaceDetect::logsToStringAndAddCommon(string head, string columns){
 }
 
 void FaceDetect::updateTotalTime(int frameIndex, int time) {
-  logs[frameIndex].totalTime = (int64) time;
+  logs[frameIndex].totalTime = (int64)time;
 }
 
 FaceEyesDetectLog::FaceEyesDetectLog() {}
@@ -177,7 +232,9 @@ string FaceEyesDetectLog::toString() {
   return this->workloadName + "," + this->functionName + "," +
          to_string(this->numberDetectedFaces) + "," +
          to_string(this->numberDetectedEyes) + "," +
-         to_string(this->processTime) + "," + to_string(this->totalTime);
+         to_string(this->processTime) + "," + to_string(this->preProcTime) +
+         ", " + to_string(this->tagProcTime) + ", " +
+         to_string(this->posProcTime) + ", " + to_string(this->totalTime);
 }
 
 } // namespace detectorsz

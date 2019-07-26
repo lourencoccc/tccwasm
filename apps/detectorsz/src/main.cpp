@@ -32,8 +32,8 @@ void configureParams(int argc, char **argv) {
         stoi(argv[4]) == 0 ? Workload::FACE_DETECT : Workload::FACE_EYES_DETECT;
   } else {
     cout << "Invalid params!" << endl;
-    cout << "Usage example: .\\detectorsz_test.exe DATASET_7"
-         << " .\\dataset\\DATASET_7.mp4 0 24 0" << endl;
+    cout << "Usage example: .\\detectorsz_app.exe DATASET_7"
+         << " .\\dataset\\DATASET_1.mp4 0 0" << endl;
     return;
   }
   if (ScaleResolution::SMALL == resolutionParam) {
@@ -163,7 +163,7 @@ void report(FaceDetect &faceDetect) {
   logFile.close();
   logFile.open("META_" + reportName + ".csv");
   logFile << "workload,dataset,resolution,system,total_frames,"
-             "total_frames_processeds,test_total_time_ms,log_file"
+             "total_frames_processeds,test_total_time_ns,log_file"
           << endl;
   logFile << workloadName << "," << datasetName << "," << resolutionLabel << ","
           << system << "," << frameCount << "," << frameIndex << ","

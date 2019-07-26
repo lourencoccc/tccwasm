@@ -89,8 +89,8 @@ void convertAnyMatToGray(cv::Mat &src, cv::Mat &dest) {
 void convertAnyMatTo8U(cv::Mat &src, cv::Mat &dest) {
   // convert the mat type to cv.CV_8U
   int depth = src.type() % 8;
-  int scale = depth <= CV_8S ? 1.0 : (depth <= CV_32S ? 1.0 / 256.0 : 255.0);
-  int shift = (depth == CV_8S || depth == CV_16S) ? 128.0 : 0.0;
+  double scale = depth <= CV_8S ? 1.0 : (depth <= CV_32S ? 1.0 / 256.0 : 255.0);
+  double shift = (depth == CV_8S || depth == CV_16S) ? 128.0 : 0.0;
   src.convertTo(dest, CV_8U, scale, shift);
 }
 

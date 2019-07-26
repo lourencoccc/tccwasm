@@ -70,6 +70,9 @@ public:
   int numberDetectedEyes = 0;
   int64 processTime = 0;
   int64 totalTime = 0;
+  int64 preProcTime = 0;
+  int64 tagProcTime = 0;
+  int64 posProcTime = 0;
   string toString();
 
 private:
@@ -257,8 +260,6 @@ public:
 private:
   cv::CascadeClassifier faceCascade;
   cv::CascadeClassifier eyesCascade;
-  void faceDetectCount(MatAdapter &src, int &numFaces);
-  void faceAndEyesDetectCount(MatAdapter &src, int &numFaces, int &numEyes);
   void loadCascadeFiles();
 };
 

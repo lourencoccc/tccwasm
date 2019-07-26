@@ -69,7 +69,7 @@ const playSelectedFile = function (event) {
   let videoNode = document.getElementById('videoSrc')
   let canPlay = videoNode.canPlayType(type)
   if (canPlay === '') canPlay = 'no'
-  let message = 'Can play type "' + type + '": ' + canPlay
+  let message = 'Pode executar "' + type + '": ' + canPlay
   let isError = canPlay === 'no'
   showMessage(message, isError)
   if (isError) {

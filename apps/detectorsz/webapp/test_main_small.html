@@ -6,22 +6,28 @@
   <meta charset="utf-8">
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <link rel="stylesheet" href="main.css">
-  <title>TCC WASM - Test Medium Scale</title>
+  <title>TCC WASM - Test Small Scale</title>
 </head>
 
 <body>
-  <label id="rolutionLabel" style="display: none">MEDIUM</label>
+  <p>
+    <h1>TCC WASM - Detectorsz Web</h1>
+  </p>
+  <p>
+    <h2>Cenário de Teste 01:</h2>
+  </p>
+  <label id="rolutionLabel" style="display: none">SMALL</label>
   <section id="imgproc">
     <div id="message"></div>
     <input id="inputFile" type="file" accept="video/mp4" />
   </section>
   <section id="secVideo">
-    <div style="display:none">
-      <video id="videoSrc" width="768" height="480" controls autoplay>
+    <div style="display: none">
+      <video id="videoSrc" width="480" height="320" controls>
         Your browser does not support the video tag.
       </video>
     </div>
-    <canvas id="videoProcessed" width="768" height="480">
+    <canvas id="videoProcessed" width="480" height="320">
     </canvas>
   </section>
   <script type="text/javascript" src="main.js"></script>
