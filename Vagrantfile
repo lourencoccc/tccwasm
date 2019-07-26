@@ -60,6 +60,7 @@ Vagrant.configure("2") do |config|
       vb.memory = "1536"
       vb.cpus = 2
       vb.customize ["modifyvm", :id, "--vram", "64"]
+      vb.customize [ "guestproperty", "set", :id, "/VirtualBox/GuestAdd/VBoxService/--timesync-set-threshold", 1000 ]
   end
   #
   # View the documentation for the provider you are using for more
