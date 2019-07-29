@@ -59,14 +59,14 @@ void FaceDetect::faceDetectWithLog(MatAdapter &srcImg) {
   convertAnyMatToGray(srcImg.matImg, dest);
   equalizeHist(dest, dest);
   auto end = high_resolution_clock::now();
-  log.preProcTime = duration_cast<microseconds>(end - start).count();
+  log.preProcTime = duration_cast<milliseconds>(end - start).count();
   //-- Detect faces process
   start = high_resolution_clock::now();
   std::vector<Rect> faces;
   faceCascade.detectMultiScale(dest, faces);
   log.numberDetectedFaces = faces.size();
   end = high_resolution_clock::now();
-  log.processTime = duration_cast<microseconds>(end - start).count();
+  log.processTime = duration_cast<milliseconds>(end - start).count();
   //-- Tag faces
   start = high_resolution_clock::now();
   for (size_t i = 0; i < faces.size(); i++) {
@@ -77,12 +77,12 @@ void FaceDetect::faceDetectWithLog(MatAdapter &srcImg) {
             Scalar(255, 0, 255), 4);
   }
   end = high_resolution_clock::now();
-  log.tagProcTime = duration_cast<microseconds>(end - start).count();
+  log.tagProcTime = duration_cast<milliseconds>(end - start).count();
   //-- Pos process
   start = high_resolution_clock::now();
   convertAnyMatToRGBA(srcImg.matImg, srcImg.matImg);
   end = high_resolution_clock::now();
-  log.posProcTime = duration_cast<microseconds>(end - start).count();
+  log.posProcTime = duration_cast<milliseconds>(end - start).count();
   logs.push_back(log);
 }
 
@@ -96,14 +96,14 @@ void FaceDetect::faceAndEyesDetectWithLog(MatAdapter &srcImg) {
   convertAnyMatToGray(srcImg.matImg, dest);
   equalizeHist(dest, dest);
   auto end = high_resolution_clock::now();
-  log.preProcTime = duration_cast<microseconds>(end - start).count();
+  log.preProcTime = duration_cast<milliseconds>(end - start).count();
   //-- Detect faces
   std::vector<Rect> faces;
   start = high_resolution_clock::now();
   faceCascade.detectMultiScale(dest, faces);
   log.numberDetectedFaces = faces.size();
   end = high_resolution_clock::now();
-  log.processTime = duration_cast<microseconds>(end - start).count();
+  log.processTime = duration_cast<milliseconds>(end - start).count();
   for (size_t i = 0; i < faces.size(); i++) {
     //-- In each face, detect eyes
     start = high_resolution_clock::now();
@@ -113,7 +113,7 @@ void FaceDetect::faceAndEyesDetectWithLog(MatAdapter &srcImg) {
     log.numberDetectedEyes = log.numberDetectedEyes + eyes.size();
     end = high_resolution_clock::now();
     log.processTime =
-        log.processTime + duration_cast<microseconds>(end - start).count();
+        log.processTime + duration_cast<milliseconds>(end - start).count();
     //-- Tag process
     start = high_resolution_clock::now();
     Point center(faces[i].x + faces[i].width / 2,
@@ -130,13 +130,13 @@ void FaceDetect::faceAndEyesDetectWithLog(MatAdapter &srcImg) {
     }
     end = high_resolution_clock::now();
     log.tagProcTime =
-        log.tagProcTime + duration_cast<microseconds>(end - start).count();
+        log.tagProcTime + duration_cast<milliseconds>(end - start).count();
   }
   //--Pos process
   start = high_resolution_clock::now();
   convertAnyMatToRGBA(srcImg.matImg, srcImg.matImg);
   end = high_resolution_clock::now();
-  log.posProcTime = duration_cast<microseconds>(end - start).count();
+  log.posProcTime = duration_cast<milliseconds>(end - start).count();
   logs.push_back(log);
 }
 
@@ -214,7 +214,7 @@ string FaceDetect::logsToString() {
 string FaceDetect::logsToStringAndAddCommon(string head, string columns) {
   string alllog =
       "id,dataset,workload,faces_detected,eyes_detected,"
-      "process_time_us,pre_time_us,tag_time_us,pos_time_us,total_time_ms" +
+      "process_time_ms,pre_time_ms,tag_time_ms,pos_time_ms,total_time_ms" +
       head + "\n";
   for (unsigned int i = 0; i < logs.size(); i++) {
     alllog = alllog + to_string(i) + "," + logs[i].toString() + columns + "\n";

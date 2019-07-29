@@ -163,7 +163,7 @@ void report(FaceDetect &faceDetect) {
   logFile.close();
   logFile.open("META_" + reportName + ".csv");
   logFile << "workload,dataset,resolution,system,total_frames,"
-             "total_frames_processeds,test_total_time_ns,log_file"
+             "total_frames_processeds,test_total_time_ms,log_file"
           << endl;
   logFile << workloadName << "," << datasetName << "," << resolutionLabel << ","
           << system << "," << frameCount << "," << frameIndex << ","
