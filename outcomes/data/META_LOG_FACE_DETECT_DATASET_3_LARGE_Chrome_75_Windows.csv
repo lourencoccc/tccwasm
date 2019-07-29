@@ -1,2 +1,2 @@
 workload,dataset,resolution,system,total_frames,total_frames_processeds,test_total_time_ms,log_file
-FACE_DETECT,DATASET_3,LARGE,Chrome_75_Windows,0,920,861552.5649999981,LOG_FACE_DETECT_DATASET_3_LARGE_Chrome_75_Windows.csv
+FACE_DETECT,DATASET_3,LARGE,Chrome_75_Windows,0,925,871169.6099999826,LOG_FACE_DETECT_DATASET_3_LARGE_Chrome_75_Windows.csv

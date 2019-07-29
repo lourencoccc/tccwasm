@@ -1,0 +1,2 @@
+workload,dataset,resolution,system,total_frames,total_frames_processeds,test_total_time_ns,log_file
+FACE_DETECT,DATASET_1,SMALL,WINDOWS_10_WIN32,3915,1803,159692,LOG_FACE_DETECT_DATASET_1_SMALL_WINDOWS_10_WIN32.csv
