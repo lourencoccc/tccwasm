@@ -1,2 +1,0 @@
-workload,dataset,resolution,system,total_frames,total_frames_processeds,test_total_time_ms,log_file
-FACE_DETECT,DATASET_2,LARGE,Firefox_67_Windows,0,107,101043,LOG_FACE_DETECT_DATASET_2_LARGE_Firefox_67_Windows.csv

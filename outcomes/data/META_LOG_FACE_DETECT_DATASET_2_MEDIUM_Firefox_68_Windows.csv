@@ -1,0 +1,2 @@
+workload,dataset,resolution,system,total_frames,total_frames_processeds,test_total_time_ms,log_file
+FACE_DETECT,DATASET_2,MEDIUM,Firefox_68_Windows,0,217,100894,LOG_FACE_DETECT_DATASET_2_MEDIUM_Firefox_68_Windows.csv
