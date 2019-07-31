@@ -1,6 +1,7 @@
 {
     "files.associations": {
-        "iostream": "cpp"
+        "iostream": "cpp",
+        "xstddef": "cpp"
     },
     "python.pythonPath": ".venv\\Scripts\\python.exe"
 }
