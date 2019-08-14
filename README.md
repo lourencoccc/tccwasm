@@ -1,11 +1,19 @@
-# tccwasm
-Web Assembly - Uma analise quantitativa e qualitativa
+# WebAssembly - Uma analise quantitativa utilizando processamento de imgem
+
+Este repositorio contem todos os artefatos desenvolvidos para o meu trabalho de conclusão de curso.
 
 
+## Estrutura de Diretorios
 
-Ambiente de desenvolvimento é o Linux que pode ser configurado automaticamente com Vagrante usando o Virtual Box
+* **apps**: aplicações utilizdas no TCC.
+* **arch**: Documentação da Analise e projeto
+* **dataset**: Massa de dados de teste
+* **docs**: Documentação prosuzida.
+* **outcomes**: Dados coletados após execução dos cénarios de teste.
+* **pocs**: Provas de conceito e experimentos diversos envolvendo WebAssembly e OpenCV
+* **scripts**: Stripts uteis.
 
-Pré-requsitos:
+## Pré-requsitos
 
 * [VirtualBox 6.0.4 Oracle VM VirtualBox Extension Pack](https://www.virtualbox.org/wiki/Downloads)
 * [Vagrant](https://github.com/hashicorp/vagrant)
@@ -14,7 +22,7 @@ Iniciar maquina virutal:
 
     Vagrant up
 
-Após instalação:
+## Pós-instalação
 
 Por padrão o Vagrant cria um dsco virtual do tipo VMDK, que não pode ser redimendsionado como será preciso mais do que os 8 GB,
 sugeridos como padrão, devemos proceder com a substituição do disco VMDK por VDI, conforme proceimento a seguir:
@@ -30,15 +38,6 @@ sugeridos como padrão, devemos proceder com a substituição do disco VMDK por 
 
 3.  Caso o disco VDK já tenha sido criado é possivel substituir:
 
-
-
-
-em++   -s WASM=1    -fsigned-char -W -Wall -Werror=return-type -Werror=non-virtual-dtor -Werror=address -Werror=sequence-point -Wformat -Werror=format-security -Wmissing-declarations -Wmissing-prototypes -Wstrict-prototypes -Wundef -Winit-self -Wpointer-arith -Wshadow -Wsign-promo -Wuninitialized -Winit-self -Winconsistent-missing-override -Wno-narrowing -Wno-delete-non-virtual-dtor -Wno-unnamed-type-template-args -Wno-comment -fdiagnostics-show-option -pthread -Qunused-arguments -ffunction-sections -fdata-sections  -fvisibility=hidden -fvisibility-inlines-hidden -DNDEBUG -O2  -DNDEBUG    -Wl,--gc-sections -O2   --memory-init-file 0 -s TOTAL_MEMORY=134217728 -s ALLOW_MEMORY_GROWTH=1 -s MODULARIZE=1 -s SINGLE_FILE=1 -s EXPORT_NAME="'cv'" -s DEMANGLE_SUPPORT=1 -s FORCE_FILESYSTEM=1 --use-preload-plugins --bind --post-js /home/vagrant/opencv/modules/js/src/helpers.js  -Wno-missing-prototypes @CMakeFiles/opencv_js.dir/objects1.rsp  -o ../../bin/opencv_js.js @CMakeFiles/opencv_js.dir/linklibs.rsp
-
-
         cd D:\VMBox\tccwasm_default_1551897915300_49204
         VBoxManage createmedium disk --filename .\tccwasm.vdi --format VDI --size 51200
         VBoxManage storageattach tccwasm_default_1551897915300_49204 --storagectl "SATA Controller" --port 0 --device 0 --type hdd --medium .\tccwasm.vdi
-
-
-Media, mediana, Desvio padrão por systema, 
